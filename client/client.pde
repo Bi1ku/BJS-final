@@ -5,13 +5,15 @@ import java.util.Arrays;
 Client client;
 Car car;
 int id = 0;
-HashMap<Integer, PVector> others;
+HashMap<Integer, Response> others;
 boolean w, s, a, d;
+PImage enemySprite;
 
 void setup() {
   size(600, 400);
 
-  others = new HashMap<Integer, PVector>();
+  enemySprite = loadImage("../assets/enemy_black.png");
+  others = new HashMap<Integer, Response>();
   id = int(random(100000));
   client = new Client(this, "127.0.0.1", 5204);
   car = new Car(new PVector(0, 0));
@@ -44,7 +46,7 @@ void draw() {
   car.update();
 
   if (client.available() > 0) {
-    client.write(id + "," + car.pos.x + "," + car.pos.y);
+    client.write(id + "," + car.pos.x + "," + car.pos.y + "," + car.getVel().heading());
 
     String res = client.readString();
 
@@ -52,13 +54,16 @@ void draw() {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
 
       if (!point[0].equals(str(id))) {
-        others.put(int(point[0]), new PVector(float(point[1]), float(point[2])));
+        others.put(int(point[0]), new Response(float(point[1]), float(point[2]), float(point[3])));
       }
     }
   }
 
-  for (PVector other: others.values()) {
-    fill(0, 255, 0);
-    rect(other.x, other.y, 20, 10);
+  for (Response other: others.values()) {
+    imageMode(CENTER);
+    scale(0.1);
+    translate(other.getX(), other.getY());
+    rotate(other.getHeading());
+    image(enemySprite, 0, 0);
   }
 }

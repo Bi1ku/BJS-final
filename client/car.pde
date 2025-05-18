@@ -1,7 +1,4 @@
 class Car {
-  private static final int WIDTH = 20;
-  private static final int HEIGHT = 10;
-
   private PVector pos;
   private PVector vel;
   private PImage sprite;

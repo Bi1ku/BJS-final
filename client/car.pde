@@ -19,11 +19,13 @@ class Car {
   }
 
   public void display() {
+    pushMatrix();
     imageMode(CENTER);
     scale(0.1);
     translate(pos.x, pos.y);
     rotate(vel.heading());
     image(sprite, 0, 0);
+    popMatrix();
   }
 
   public PVector getVel() {

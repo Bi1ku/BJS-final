@@ -60,10 +60,12 @@ void draw() {
   }
 
   for (Response other: others.values()) {
+    pushMatrix();
     imageMode(CENTER);
     scale(0.1);
     translate(other.getX(), other.getY());
     rotate(other.getHeading());
     image(enemySprite, 0, 0);
+    popMatrix();
   }
 }

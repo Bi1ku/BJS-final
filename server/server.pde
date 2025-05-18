@@ -19,7 +19,7 @@ void draw() {
     String val = client.readString();
     if (val != null) {
       println("Received: " + val);
-      server.write(val + "!");
+      server.write("!@#$" + val + "!@#$");
     }
   }
   server.write(ticks);

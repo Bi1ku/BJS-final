@@ -3,6 +3,7 @@ import java.util.Map;
 import java.util.Arrays;
 
 final float ACCEL = 3;
+final float DEACCEL = 0.04;
 final float FRICTION = 0.03;
 
 Client client;
@@ -39,12 +40,18 @@ void keyReleased() {
 void draw() {
   background(0);
 
-  if (w) car.move(new PVector(0, -ACCEL));
-  if (s) car.move(new PVector(0, ACCEL));
-  if (a) car.move(new PVector(-ACCEL, 0));
-  if (d) car.move(new PVector(ACCEL, 0));
+  PVector vel = car.getVel();
 
-  car.move(car.getVel().copy().mult(-FRICTION)); // friction
+  if (w) {
+    PVector forward = PVector.fromAngle(vel.heading());
+    forward.mult(ACCEL);
+    car.move(forward);
+  }
+  if (s && vel.mag() > 0) car.move(vel.copy().mult(-DEACCEL));
+  if (a) vel.rotate(constrain(-DEACCEL * vel.mag(), -DEACCEL, 0));
+  if (d) vel.rotate(constrain(DEACCEL * vel.mag(), 0, DEACCEL));
+
+  car.move(vel.copy().mult(-FRICTION)); // friction
 
   car.update();
 

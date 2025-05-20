@@ -2,6 +2,9 @@ import processing.net.*;
 import java.util.Map;
 import java.util.Arrays;
 
+final float ACCEL = 3;
+final float FRICTION = 0.03;
+
 Client client;
 Car car;
 int id = 0;
@@ -10,7 +13,7 @@ boolean w, s, a, d;
 PImage enemySprite;
 
 void setup() {
-  size(600, 400);
+  size(1200, 800);
 
   enemySprite = loadImage("../assets/enemy_black.png");
   others = new HashMap<Integer, Response>();
@@ -36,12 +39,12 @@ void keyReleased() {
 void draw() {
   background(0);
 
-  if (w) car.move(new PVector(0, -1.5));
-  if (s) car.move(new PVector(0, 1.5));
-  if (a) car.move(new PVector(-1.5, 0));
-  if (d) car.move(new PVector(1.5, 0));
+  if (w) car.move(new PVector(0, -ACCEL));
+  if (s) car.move(new PVector(0, ACCEL));
+  if (a) car.move(new PVector(-ACCEL, 0));
+  if (d) car.move(new PVector(ACCEL, 0));
 
-  car.move(car.getVel().copy().mult(-0.02)); // friction
+  car.move(car.getVel().copy().mult(-FRICTION)); // friction
 
   car.update();
 

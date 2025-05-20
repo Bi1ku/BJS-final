@@ -2,9 +2,11 @@ import processing.net.*;
 import java.util.Map;
 import java.util.Arrays;
 
-final float ACCEL = 3;
+final float ACCEL = 4.5;
 final float DEACCEL = 0.04;
-final float FRICTION = 0.03;
+final float FRICTION = 0.02;
+
+boolean reversing;
 
 Client client;
 Car car;
@@ -19,8 +21,9 @@ void setup() {
   enemySprite = loadImage("../assets/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
-  client = new Client(this, "192.168.1.197", 5204);
+  client = new Client(this, "149.89.160.123", 5204);
   car = new Car(new PVector(0, 0));
+  reversing = false;
 }
 
 void keyPressed() {
@@ -47,9 +50,21 @@ void draw() {
     forward.mult(ACCEL);
     car.move(forward);
   }
-  if (s && vel.mag() > 0) car.move(vel.copy().mult(-DEACCEL));
-  if (a) vel.rotate(constrain(-DEACCEL * vel.mag(), -DEACCEL, 0));
-  if (d) vel.rotate(constrain(DEACCEL * vel.mag(), 0, DEACCEL));
+  if (s) {
+    if (vel.mag() > 10 && !reversing) {
+      car.move(vel.copy().mult(-DEACCEL));
+    }
+    else {
+      reversing = true;
+      vel.limit(50);
+      // infinite backwards vector loop
+      PVector backward = PVector.fromAngle(vel.heading());
+      backward.mult(-DEACCEL * 40);
+      car.move(backward);
+    }
+  }
+  if (a) vel.rotate(constrain(-DEACCEL * (vel.mag() / 60), -DEACCEL, 0));
+  if (d) vel.rotate(constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
 
   car.move(vel.copy().mult(-FRICTION)); // friction
 

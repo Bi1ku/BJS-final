@@ -7,6 +7,7 @@ final float DEACCEL = 0.04;
 final float FRICTION = 0.02;
 
 boolean reversing;
+boolean toggledBack;
 
 Client client;
 Car car;
@@ -24,6 +25,7 @@ void setup() {
   client = new Client(this, "149.89.160.123", 5204);
   car = new Car(new PVector(0, 0));
   reversing = false;
+  toggledBack = false;
 }
 
 void keyPressed() {
@@ -49,6 +51,8 @@ void draw() {
     PVector forward = PVector.fromAngle(vel.heading());
     forward.mult(ACCEL);
     car.move(forward);
+    reversing = false;
+    toggledBack = false;
   }
   if (s) {
     if (vel.mag() > 10 && !reversing) {
@@ -59,7 +63,12 @@ void draw() {
       vel.limit(50);
       // infinite backwards vector loop
       PVector backward = PVector.fromAngle(vel.heading());
-      backward.mult(-DEACCEL * 40);
+      if (!toggledBack) {
+        toggledBack = true;
+        vel.rotate(PI);
+        car.setFlip(true);
+      }
+      else backward.mult(DEACCEL * 40);
       car.move(backward);
     }
   }

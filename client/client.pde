@@ -49,9 +49,15 @@ void draw() {
 
   if (w) {
     PVector forward = PVector.fromAngle(vel.heading());
+    if (reversing) {
+      forward.rotate(PI);
+      if (vel.mag() < 5) {
+        reversing = false;
+        car.setFlip(false);
+      }
+    }
     forward.mult(ACCEL);
     car.move(forward);
-    reversing = false;
     toggledBack = false;
   }
   if (s) {
@@ -61,7 +67,6 @@ void draw() {
     else {
       reversing = true;
       vel.limit(50);
-      // infinite backwards vector loop
       PVector backward = PVector.fromAngle(vel.heading());
       if (!toggledBack) {
         toggledBack = true;

@@ -2,7 +2,7 @@ import processing.net.*;
 import java.util.Map;
 import java.util.Arrays;
 
-final float ACCEL = 4.5;
+final float ACCEL = 3.0;
 final float DEACCEL = 0.04;
 final float FRICTION = 0.02;
 
@@ -13,7 +13,7 @@ Client client;
 Car car;
 int id = 0;
 HashMap<Integer, Response> others;
-boolean w, s, a, d;
+boolean w, s, a, d, space;
 PImage enemySprite;
 
 void setup() {
@@ -33,6 +33,7 @@ void keyPressed() {
   if (key == 's') s = true;
   if (key == 'a') a = true;
   if (key == 'd') d = true;
+  if (key == ' ') space = true;
 }
 
 void keyReleased() {
@@ -40,6 +41,7 @@ void keyReleased() {
   if (key == 's') s = false;
   if (key == 'a') a = false;
   if (key == 'd') d = false;
+  if (key == ' ') space = false;
 }
 
 void draw() {
@@ -51,7 +53,7 @@ void draw() {
     PVector forward = PVector.fromAngle(vel.heading());
     if (reversing) {
       forward.rotate(PI);
-      if (vel.mag() < 5) {
+      if (vel.mag() < 3) {
         reversing = false;
         car.setFlip(false);
       }
@@ -79,6 +81,9 @@ void draw() {
   }
   if (a) vel.rotate(constrain(-DEACCEL * (vel.mag() / 60), -DEACCEL, 0));
   if (d) vel.rotate(constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
+  if (space) {
+    // create traction force
+  }
 
   car.move(vel.copy().mult(-FRICTION)); // friction
 

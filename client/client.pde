@@ -8,10 +8,11 @@ int id = 0;
 HashMap<Integer, Response> others;
 boolean w, s, a, d;
 PImage enemySprite;
+Map map = new Map();
 
 void setup() {
   size(600, 400);
-
+  map.m = loadImage("../assets/racetrack.jpg");
   enemySprite = loadImage("../assets/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
@@ -35,6 +36,7 @@ void keyReleased() {
 
 void draw() {
   background(0);
+  map.updateMap(car.pos.x, car.pos.y);
 
   if (w) car.move(new PVector(0, -1.5));
   if (s) car.move(new PVector(0, 1.5));

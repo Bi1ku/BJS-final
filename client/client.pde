@@ -22,7 +22,7 @@ void setup() {
   enemySprite = loadImage("../assets/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
-  client = new Client(this, "149.89.160.123", 5204);
+  client = new Client(this, "149.89.160.128", 5204);
   car = new Car(new PVector(0, 0));
   reversing = false;
   toggledBack = false;
@@ -79,10 +79,22 @@ void draw() {
       car.move(backward);
     }
   }
-  if (a) vel.rotate(constrain(-DEACCEL * (vel.mag() / 60), -DEACCEL, 0));
-  if (d) vel.rotate(constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
+  if (a) {
+    if (space) vel.rotate(constrain(-DEACCEL * (vel.mag() / 2), -DEACCEL, 0));
+    else vel.rotate(constrain(-DEACCEL * (vel.mag() / 60), -DEACCEL, 0));
+  }
+  if (d) {
+    if (space)
+      vel.rotate(constrain(DEACCEL * (vel.mag() / 2), 0, DEACCEL));
+    else vel.rotate(constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
+  }
   if (space) {
-    // create traction force
+    if (d)
+     car.setTraction(vel.copy().mult(0.23).rotate(-PI / 2));
+    else if (a) car.setTraction(vel.copy().mult(0.23).rotate(PI / 2));
+     vel.mult(0.985);
+  } else {
+     car.setTraction(new PVector(0, 0));
   }
 
   car.move(vel.copy().mult(-FRICTION)); // friction

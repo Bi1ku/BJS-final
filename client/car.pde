@@ -52,4 +52,12 @@ class Car {
   public PVector getVel() {
     return vel;
   }
+  
+  public PVector getTraction() {
+    return traction;
+  }
+  
+  public void setTraction(PVector traction) {
+    this.traction = traction;
+  }
 }

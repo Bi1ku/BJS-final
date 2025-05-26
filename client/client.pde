@@ -2,7 +2,7 @@ import processing.net.*;
 import java.util.Map;
 import java.util.Arrays;
 
-final float ACCEL = 3.0;
+final float ACCEL = 4.0;
 final float DEACCEL = 0.04;
 final float FRICTION = 0.02;
 
@@ -22,7 +22,7 @@ void setup() {
   enemySprite = loadImage("../assets/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
-  client = new Client(this, "149.89.160.128", 5204);
+  client = new Client(this, "127.0.0.1", 5204);
   car = new Car(new PVector(0, 0));
   reversing = false;
   toggledBack = false;
@@ -48,6 +48,7 @@ void draw() {
   background(0);
 
   PVector vel = car.getVel();
+  PVector targetTraction = new PVector(0, 0);
 
   if (w) {
     PVector forward = PVector.fromAngle(vel.heading());
@@ -58,6 +59,7 @@ void draw() {
         car.setFlip(false);
       }
     }
+    car.getTraction().add(vel.copy().normalize().mult(0.2));
     forward.mult(ACCEL);
     car.move(forward);
     toggledBack = false;
@@ -77,6 +79,7 @@ void draw() {
       }
       else backward.mult(DEACCEL * 40);
       car.move(backward);
+      car.getTraction().add(vel.copy().normalize().mult(-0.1));
     }
   }
   if (a) {
@@ -90,12 +93,14 @@ void draw() {
   }
   if (space) {
     if (d)
-     car.setTraction(vel.copy().mult(0.23).rotate(-PI / 2));
-    else if (a) car.setTraction(vel.copy().mult(0.23).rotate(PI / 2));
+     targetTraction = vel.copy().mult(0.3).rotate(-PI / 2);
+    else if (a) targetTraction = vel.copy().mult(0.3).rotate(PI / 2);
      vel.mult(0.985);
   } else {
-     car.setTraction(new PVector(0, 0));
+     car.getTraction().mult(0.5);
   }
+  
+  car.getTraction().lerp(targetTraction, 0.1);
 
   car.move(vel.copy().mult(-FRICTION)); // friction
 

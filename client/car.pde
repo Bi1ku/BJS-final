@@ -14,7 +14,7 @@ class Car {
   }
 
   public void move(PVector dir) {
-    vel.limit(175);
+    vel.limit(200);
     vel.add(dir);
   }
 

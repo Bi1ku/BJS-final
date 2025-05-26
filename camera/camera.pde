@@ -3,21 +3,20 @@ int[][] map;
 boolean w, s, a, d;
 
 void setup(){
-  size(461,360);
-  PImage lion = loadImage("lion.jpg");
-  lion.loadPixels();
-  image(lion,0,0);
-  int x = lion.width;
-  int y = lion.height;
+  size(400,400);
+  PImage mapFr = loadImage("mapFr.jpg");
+  int x = mapFr.width;
+  int y = mapFr.height;
   map = new int[y][x];
   int idx = 0;
   for(int i = 0; i < y; i++){
-    for(int j = 0; j < y; j++){
-      map[j][i] = lion.pixels[idx];
+    for(int j = 0; j < x; j++){
+      map[i][j] = mapFr.pixels[idx];
       idx++;
     }
   }
-  car = new Car(new PVector(1000,1000));
+  System.out.println(map.length + " " + map[0].length);
+  car = new Car(new PVector(width * 5, height * 5));
 }
 
 void keyPressed() {
@@ -34,23 +33,20 @@ void keyReleased() {
   if (key == 'd') d = false;
 }
 
-void map(){
-  PImage lion = loadImage("lion.jpg");
-  lion.loadPixels();
-  image(lion,0,0);
-}
+
 void draw(){
-  PImage lion = loadImage("lion.jpg");
-  PImage output = lion.copy();
-  lion.loadPixels();
-  image(lion,0,0);
-  image(output, lion.width / 2, lion.height/2);
+  background(0);
+  float pX = car.getPos().x / 10;
+  float pY = car.getPos().y / 10;
+  System.out.println(pX + " " + pY);
+  PImage mapFr = loadImage("mapFr.jpg");
+  mapFr.loadPixels();
+  image(mapFr, (mapFr.width / 2) - pX, (mapFr.height/2) - pY, mapFr.width * 10, mapFr.height * 10);
+  
   if (w) car.move(new PVector(0, -1.5));
   if (s) car.move(new PVector(0, 1.5));
   if (a) car.move(new PVector(-1.5, 0));
   if (d) car.move(new PVector(1.5, 0));
-
   car.move(car.getVel().copy().mult(-0.02)); // friction
-
-  car.update();
+  car.update((width * 10) / 2, (height * 10) / 2);
 }

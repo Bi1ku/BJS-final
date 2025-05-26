@@ -12,17 +12,23 @@ class Car {
   public void move(PVector dir) {
     vel.add(dir);
   }
-
-  public void update() {
-    pos.add(vel);
-    display();
+  
+  public PVector getPos(){
+    return pos;
   }
 
-  public void display() {
+  public void update(int x, int y) {
+    System.out.println(pos.x + " " + pos.y);
+    pos.add(vel);
+    display(x,y);
+  }
+
+  public void display(int x, int y) {
     pushMatrix();
     imageMode(CENTER);
     scale(0.1);
-    translate(pos.x, pos.y);
+    //translate(pos.x, pos.y);
+    translate(x, y);
     rotate(vel.heading());
     image(sprite, 0, 0);
     popMatrix();

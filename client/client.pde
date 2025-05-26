@@ -16,7 +16,7 @@ void setup() {
   enemySprite = loadImage("../assets/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
-  client = new Client(this, "149.89.160.128", 5204);
+  client = new Client(this, "192.168.1.25", 5204);
   car = new Car(new PVector(0, 0));
 }
 
@@ -37,7 +37,9 @@ void keyReleased() {
 void draw() {
   background(0);
   //map.updateMap();
-  map.updateMap(car.pos.x, car.pos.y);
+  if(!map.updateMap(car.pos.x, car.pos.y)){
+    
+  }
 
   if (w) car.move(new PVector(0, -1.5));
   if (s) car.move(new PVector(0, 1.5));

@@ -73,6 +73,10 @@ void draw() {
     forward.mult(ACCEL);
     car.move(forward);
     toggledBack = false;
+    
+    if (!accelerationSound.isPlaying()) accelerationSound.play();
+  } else {
+    if (accelerationSound.isPlaying()) accelerationSound.stop();
   }
   if (s) {
     if (vel.mag() > 10 && !reversing) {
@@ -128,7 +132,7 @@ void draw() {
 
     String res = client.readString();
 
-    if (res != null && res.length() > 5) {
+    if (res != null && res.length() > 5 && res.length() < 10) {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
 
       if (!point[0].equals(str(id))) {

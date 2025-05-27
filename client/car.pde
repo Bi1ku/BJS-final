@@ -2,7 +2,8 @@ class Car {
   private PVector pos;
   private PVector vel;
   private PImage sprite;
-
+  float scale = 0.05;
+  
   public Car(PVector pos) {
     this.pos = pos;
     this.vel = new PVector(0, 0);
@@ -21,7 +22,7 @@ class Car {
   public void display() {
     pushMatrix();
     imageMode(CENTER);
-    scale(0.1);
+    scale(scale);
     translate(pos.x, pos.y);
     rotate(vel.heading());
     image(sprite, 0, 0);

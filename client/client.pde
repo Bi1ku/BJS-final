@@ -9,15 +9,16 @@ HashMap<Integer, Response> others;
 boolean w, s, a, d;
 PImage enemySprite;
 Map map = new Map();
+float scale = 0.05;
 
 void setup() {
-  size(640, 360);
+  size(1280/2, 720/2);
   map.m = loadImage("../assets/racetrack.jpg");
   enemySprite = loadImage("../assets/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
-  client = new Client(this, "192.168.1.25", 5204);
-  car = new Car(new PVector(0, 0));
+  client = new Client(this, "149.89.160.125", 5204);
+  car = new Car(new PVector(width * 1/scale,height * 1/scale));
 }
 
 void keyPressed() {
@@ -36,15 +37,32 @@ void keyReleased() {
 
 void draw() {
   background(0);
-  //map.updateMap();
-  if(!map.updateMap(car.pos.x, car.pos.y)){
-    
+  map.updateMap();
+ 
+  if (w) {
+    car.move(new PVector(0, -1));
+    if(!map.updateMap(car.pos.x, car.pos.y)){
+      car.move(new PVector(0, 1.5));
+    }
   }
-
-  if (w) car.move(new PVector(0, -1.5));
-  if (s) car.move(new PVector(0, 1.5));
-  if (a) car.move(new PVector(-1.5, 0));
-  if (d) car.move(new PVector(1.5, 0));
+  if (s) {
+    car.move(new PVector(0, 1));
+    if(!map.updateMap(car.pos.x, car.pos.y)){
+      car.move(new PVector(0, -1.5));
+    }
+  }
+  if (a) {
+    car.move(new PVector(-1, 0));
+    if(!map.updateMap(car.pos.x, car.pos.y)){
+      car.move(new PVector(1.5, 0));
+    }
+  }
+  if (d) {
+    car.move(new PVector(1, 0));
+    if(!map.updateMap(car.pos.x, car.pos.y)){
+      car.move(new PVector(-1.5, 0));
+    }
+  }
 
   car.move(car.getVel().copy().mult(-0.02)); // friction
 
@@ -67,7 +85,7 @@ void draw() {
   for (Response other: others.values()) {
     pushMatrix();
     imageMode(CENTER);
-    scale(0.1);
+    scale(scale);
     translate(other.getX(), other.getY());
     rotate(other.getHeading());
     image(enemySprite, 0, 0);

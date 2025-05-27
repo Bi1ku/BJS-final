@@ -36,10 +36,10 @@ void keyReleased() {
 void draw() {
   background(0);
 
-  if (w) car.move(new PVector(0, -1.5));
-  if (s) car.move(new PVector(0, 1.5));
-  if (a) car.move(new PVector(-1.5, 0));
-  if (d) car.move(new PVector(1.5, 0));
+  if (w) car.move(new PVector(0, -0.5));
+  if (s) car.move(new PVector(0, 0.5));
+  if (a) car.move(new PVector(-0.5, 0));
+  if (d) car.move(new PVector(0.5, 0));
 
   car.move(car.getVel().copy().mult(-0.02)); // friction
 

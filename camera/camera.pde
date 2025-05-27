@@ -16,7 +16,7 @@ void setup(){
     }
   }
   System.out.println(map.length + " " + map[0].length);
-  car = new Car(new PVector(width * 5, height * 5));
+  car = new Car(new PVector(width / 2, height / 2));
 }
 
 void keyPressed() {
@@ -36,17 +36,18 @@ void keyReleased() {
 
 void draw(){
   background(0);
-  float pX = car.getPos().x / 10;
-  float pY = car.getPos().y / 10;
+  float pX =  car.getPos().x;
+  float pY =  car.getPos().y;
   System.out.println(pX + " " + pY);
   PImage mapFr = loadImage("mapFr.jpg");
   mapFr.loadPixels();
-  image(mapFr, (mapFr.width / 2) - pX, (mapFr.height/2) - pY, mapFr.width * 10, mapFr.height * 10);
+  imageMode(CENTER);
+  image(mapFr,  width / 2 , height / 2, mapFr.width, mapFr.height);
   
-  if (w) car.move(new PVector(0, -1.5));
-  if (s) car.move(new PVector(0, 1.5));
-  if (a) car.move(new PVector(-1.5, 0));
-  if (d) car.move(new PVector(1.5, 0));
+  if (w) car.move(new PVector(0, -0.5));
+  if (s) car.move(new PVector(0, 0.5));
+  if (a) car.move(new PVector(-0.5, 0));
+  if (d) car.move(new PVector(0.5, 0));
   car.move(car.getVel().copy().mult(-0.02)); // friction
-  car.update((width * 10) / 2, (height * 10) / 2);
+  car.update();
 }

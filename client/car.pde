@@ -6,7 +6,7 @@ class Car {
   public Car(PVector pos) {
     this.pos = pos;
     this.vel = new PVector(0, 0);
-    this.sprite = loadImage("../assets/player.png");
+    this.sprite = loadImage("../assets/carFr.png");
   }
 
   public void move(PVector dir) {
@@ -14,6 +14,7 @@ class Car {
   }
 
   public void update() {
+    System.out.println(pos.x + " " + pos.y);
     pos.add(vel);
     display();
   }
@@ -21,7 +22,7 @@ class Car {
   public void display() {
     pushMatrix();
     imageMode(CENTER);
-    scale(0.1);
+    scale(1);
     translate(pos.x, pos.y);
     rotate(vel.heading());
     image(sprite, 0, 0);

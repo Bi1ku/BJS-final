@@ -69,7 +69,7 @@ void draw() {
         car.setFlip(false);
       }
     }
-    car.getTraction().add(vel.copy().normalize().mult(0.2));
+    car.getTract().add(vel.copy().normalize().mult(0.2));
     forward.mult(ACCEL);
     car.move(forward);
     toggledBack = false;
@@ -93,7 +93,7 @@ void draw() {
       }
       else backward.mult(DEACCEL * 40);
       car.move(backward);
-      car.getTraction().add(vel.copy().normalize().mult(-0.1));
+      car.getTract().add(vel.copy().normalize().mult(-0.1));
     }
   }
   if (a) {
@@ -117,11 +117,11 @@ void draw() {
     else driftSound.stop();
     vel.mult(0.985);
   } else {
-     car.getTraction().mult(0.9);
-     if (driftSound.isPlaying()) driftSound.stop();
+    car.getTract().mult(0.9);
+    if (driftSound.isPlaying()) driftSound.stop();
   }
   
-  car.getTraction().lerp(targetTraction, 0.1);
+  car.getTract().lerp(targetTraction, 0.1);
 
   car.move(vel.copy().mult(-FRICTION)); // friction
 

@@ -1,7 +1,7 @@
 import processing.net.*;
 import java.util.Map;
 import java.util.Arrays;
-
+PImage mapFr;
 Client client;
 Car car;
 int id = 0;
@@ -15,8 +15,9 @@ void setup() {
   enemySprite = loadImage("../assets/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
-  client = new Client(this, "149.89.160.128", 5204);
-  car = new Car(new PVector(0, 0));
+  client = new Client(this, "127.0.0.1", 5204);
+  mapFr = loadImage("../assets/racingMap.jpg");
+  car = new Car(new PVector(width / 2, height / 2));
 }
 
 void keyPressed() {
@@ -42,9 +43,18 @@ void draw() {
   if (d) car.move(new PVector(0.5, 0));
 
   car.move(car.getVel().copy().mult(-0.02)); // friction
-
+  
+  pushMatrix();
+  
+  PVector carPos = car.getPos();
+  translate(width / 2 - carPos.x, height / 2 - carPos.y);
+  //car.update();
+  
+  imageMode(CORNER);
+  image(mapFr, 0, 0);
   car.update();
-
+  popMatrix();
+  
   if (client.available() > 0) {
     client.write(id + "," + car.pos.x + "," + car.pos.y + "," + car.getVel().heading());
 

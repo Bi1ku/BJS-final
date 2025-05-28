@@ -12,6 +12,10 @@ class Car {
   public void move(PVector dir) {
     vel.add(dir);
   }
+  
+  public PVector getPos(){
+    return pos;
+  }
 
   public void update() {
     System.out.println(pos.x + " " + pos.y);

@@ -15,9 +15,9 @@ void setup() {
   enemySprite = loadImage("../assets/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
-  client = new Client(this, "127.0.0.1", 5204);
-  mapFr = loadImage("../assets/racingMap.jpg");
-  car = new Car(new PVector(width / 2, height / 2));
+  client = new Client(this, "149.89.160.126", 5204);
+  mapFr = loadImage("../assets/btdMap.jpg");
+  car = new Car(new PVector(0, 0));
 }
 
 void keyPressed() {
@@ -46,16 +46,19 @@ void draw() {
   
   pushMatrix();
   
+  int scaleFr = 5;
   PVector carPos = car.getPos();
-  translate(width / 2 - carPos.x, height / 2 - carPos.y);
+  translateScreen(carPos, scaleFr);
   //car.update();
   
+  scale(scaleFr);
   imageMode(CORNER);
   image(mapFr, 0, 0);
+  scale(1.0 / scaleFr);
   car.update();
   popMatrix();
   
-  if (client.available() > 0) {
+  if (client.available()  > 0) {
     client.write(id + "," + car.pos.x + "," + car.pos.y + "," + car.getVel().heading());
 
     String res = client.readString();
@@ -78,4 +81,22 @@ void draw() {
     image(enemySprite, 0, 0);
     popMatrix();
   }
+}
+
+void translateScreen(PVector carPos, int scaleFr){
+  translate(width / 2 - carPos.x, height / 2 - carPos.y);
+  if(carPos.x <= width / 2){
+    translate( - ((width / 2) - carPos.x),0);
+  }
+  if(carPos.y <= height / 2){
+    translate(0, -((height / 2) - carPos.y));
+  }
+  if(carPos.x >= (mapFr.width * scaleFr) - (width / 2)){
+    translate( (((mapFr.width * scaleFr) - (width / 2)) - carPos.x),0);
+  }
+  /*
+  if(carPos.y <= height / 2){
+    translate(0, -((height / 2) - carPos.y));
+  }
+  */
 }

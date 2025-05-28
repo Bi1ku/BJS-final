@@ -9,7 +9,7 @@ class Car {
     this.pos = pos;
     this.traction = new PVector(0, 0);
     this.vel = new PVector(0, 0);
-    this.sprite = loadImage("../assets/player.png");
+    this.sprite = loadImage("../assets/sprites/player.png");
     this.flip = false;
   }
 

@@ -1,3 +1,4 @@
+import processing.sound.*;
 import processing.net.*;
 import java.util.Map;
 import java.util.Arrays;
@@ -16,16 +17,25 @@ HashMap<Integer, Response> others;
 boolean w, s, a, d, space;
 PImage enemySprite;
 
+SoundFile driftSound, accelerationSound, gameSound;
+
 void setup() {
   size(1200, 800);
 
-  enemySprite = loadImage("../assets/enemy_black.png");
+  enemySprite = loadImage("../assets/sprites/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
-  client = new Client(this, "127.0.0.1", 5204);
+  client = new Client(this, "149.89.160.126", 5204);
   car = new Car(new PVector(0, 0));
   reversing = false;
   toggledBack = false;
+
+  driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
+  accelerationSound = new SoundFile(this, "../assets/sounds/acceleration.mp3");
+  gameSound = new SoundFile(this, "../assets/sounds/game.mp3");
+
+  gameSound.amp(0.0001);
+  gameSound.loop();
 }
 
 void keyPressed() {
@@ -63,6 +73,10 @@ void draw() {
     forward.mult(ACCEL);
     car.move(forward);
     toggledBack = false;
+    
+    if (!accelerationSound.isPlaying()) accelerationSound.play();
+  } else {
+    if (accelerationSound.isPlaying()) accelerationSound.stop();
   }
   if (s) {
     if (vel.mag() > 10 && !reversing) {
@@ -92,12 +106,19 @@ void draw() {
     else vel.rotate(constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
   }
   if (space) {
-    if (d)
+    if (d) {
+     if (!driftSound.isPlaying()) driftSound.play();
      targetTraction = vel.copy().mult(0.3).rotate(-PI / 2);
-    else if (a) targetTraction = vel.copy().mult(0.3).rotate(PI / 2);
-     vel.mult(0.985);
+    }
+    else if (a) {
+      if (!driftSound.isPlaying()) driftSound.play();
+      targetTraction = vel.copy().mult(0.3).rotate(PI / 2);
+    }
+    else driftSound.stop();
+    vel.mult(0.985);
   } else {
-     car.getTraction().mult(0.5);
+     car.getTraction().mult(0.9);
+     if (driftSound.isPlaying()) driftSound.stop();
   }
   
   car.getTraction().lerp(targetTraction, 0.1);
@@ -111,7 +132,7 @@ void draw() {
 
     String res = client.readString();
 
-    if (res != null && res.length() > 5) {
+    if (res != null && res.length() > 5 && res.length() < 10) {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
 
       if (!point[0].equals(str(id))) {

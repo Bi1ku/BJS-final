@@ -3,7 +3,8 @@ class Map{
   float scale = 0.05;
   
   void updateMap(){
-    image(m, width, height);
+    m.resize(int(1280 * 1.5), int(720 * 1.5));
+    image(m, width/2, height/2);
   }
   
   boolean updateMap(float x, float y){
@@ -21,7 +22,8 @@ class Map{
     //image(m, drawX, drawY);
     //m.loadPixels();
     //return true;
-    image(m, width, height);
+    m.resize(int(1280 * 1.5), int(720 * 1.5));
+    image(m, width/2, height/2);
     m.loadPixels();
     return true;
   }

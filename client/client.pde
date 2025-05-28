@@ -12,13 +12,13 @@ Map map = new Map();
 float scale = 0.05;
 
 void setup() {
-  size(1280/2, 720/2);
+  size(1920, 1080);
   map.m = loadImage("../assets/racetrack.jpg");
   enemySprite = loadImage("../assets/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
-  client = new Client(this, "149.89.160.125", 5204);
-  car = new Car(new PVector(width * 1/scale,height * 1/scale));
+  client = new Client(this, "149.89.160.126", 5204);
+  car = new Car(new PVector(width* 1/scale - 5500, height *  1/scale - 5000));
 }
 
 void keyPressed() {
@@ -38,31 +38,71 @@ void keyReleased() {
 void draw() {
   background(0);
   map.updateMap();
- 
   if (w) {
-    car.move(new PVector(0, -1));
-    if(!map.updateMap(car.pos.x, car.pos.y)){
-      car.move(new PVector(0, 1.5));
+    if(map.isGrey(car.pos.copy().add(new PVector(0, -1)).x, car.pos.copy().add(new PVector(0, -1)).y)){
+      car.move(new PVector(0, -1));
+      map.updateMap(car.pos.x, car.pos.y);
+    }
+    else{
+      car.vel = new PVector(0,0);
+       car.move(new PVector(0, 2));
     }
   }
   if (s) {
-    car.move(new PVector(0, 1));
-    if(!map.updateMap(car.pos.x, car.pos.y)){
-      car.move(new PVector(0, -1.5));
+    if(map.isGrey(car.pos.copy().add(new PVector(0, 1)).x, car.pos.copy().add(new PVector(0, 1)).y)){
+      car.move(new PVector(0, 1));
+      map.updateMap(car.pos.x, car.pos.y);
+    }
+    else{
+      car.vel = new PVector(0,0);
+      car.move(new PVector(0, -2));
     }
   }
   if (a) {
-    car.move(new PVector(-1, 0));
-    if(!map.updateMap(car.pos.x, car.pos.y)){
-      car.move(new PVector(1.5, 0));
+    if(map.isGrey(car.pos.copy().add(new PVector(-1, 0)).x, car.pos.copy().add(new PVector(-1, 0)).y)){
+      car.move(new PVector(-1, 0));
+      map.updateMap(car.pos.x, car.pos.y);
+    }
+    else{
+      car.vel = new PVector(0,0);
+      car.move(new PVector(2, 0));
     }
   }
   if (d) {
-    car.move(new PVector(1, 0));
-    if(!map.updateMap(car.pos.x, car.pos.y)){
-      car.move(new PVector(-1.5, 0));
+    if(map.isGrey(car.pos.copy().add(new PVector(1, 0)).x, car.pos.copy().add(new PVector(1, 0)).y)){
+      car.move(new PVector(1, 0));
+      map.updateMap(car.pos.x, car.pos.y);
+    }
+    else{
+      car.vel = new PVector(0,0);
+      car.move(new PVector(-2, 0));
     }
   }
+
+  //if (w) {
+  //  car.move(new PVector(0, -1));
+  //  if(!map.updateMap(car.pos.x, car.pos.y)){
+  //    car.move(new PVector(0, 1.5));
+  //  }
+  //}
+  //if (s) {
+  //  car.move(new PVector(0, 1));
+  //  if(!map.updateMap(car.pos.x, car.pos.y)){
+  //    car.move(new PVector(0, -1.5));
+  //  }
+  //}
+  //if (a) {
+  //  car.move(new PVector(-1, 0));
+  //  if(!map.updateMap(car.pos.x, car.pos.y)){
+  //    car.move(new PVector(1.5, 0));
+  //  }
+  //}
+  //if (d) {
+  //  car.move(new PVector(1, 0));
+  //  if(!map.updateMap(car.pos.x, car.pos.y)){
+  //    car.move(new PVector(-1.5, 0));
+  //  }
+  //}
 
   car.move(car.getVel().copy().mult(-0.02)); // friction
 

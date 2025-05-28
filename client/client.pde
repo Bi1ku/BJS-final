@@ -25,7 +25,7 @@ void setup() {
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
-  client = new Client(this, "127.0.0.1", 5204);
+  client = new Client(this, "149.89.160.126", 5204);
   car = new Car(new PVector(0, 0));
   reversing = false;
   toggledBack = false;

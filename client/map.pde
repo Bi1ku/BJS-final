@@ -31,9 +31,9 @@ class Map{
   boolean isGrey(float x, float y) {
     if (x < 0 || y < 0 || x >= m.width * (1/scale) || y >= m.height * 1/(scale)) return false;
     color c = m.get(int(x * scale), int(y * scale));
-    println(x * scale + " " + y * scale);
+    //println(x * scale + " " + y * scale);
     println(red(c) + " " + green(c) + " " + blue(c));
-    int margin = 6;
+    int margin = 5;
     return Math.abs(red(c) - green(c)) <= margin && Math.abs(blue(c) - red(c)) <= margin;
   }
 }

@@ -1,10 +1,12 @@
 class Enemy {
   private PVector pos;
   private float heading;
+  private PImage sprite;
 
-  public Enemy(PVector pos, float heading) {
+  public Enemy(PVector pos, float heading, String path) {
     this.pos = pos;
     this.heading = heading;
+    this.sprite = loadImage(path);
   }
   
   public PVector getPos() {
@@ -21,7 +23,7 @@ class Enemy {
     scale(0.1);
     translate(pos.x, pos.y);
     rotate(heading);
-    image(enemySprite, 0, 0);
+    image(sprite, 0, 0);
     popMatrix();
   }
 }

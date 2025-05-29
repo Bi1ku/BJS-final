@@ -3,16 +3,10 @@ import processing.net.*;
 import java.util.Map;
 import java.util.Arrays;
 
-final float ACCEL = 4.0;
-final float DEACCEL = 0.04;
-final float FRICTION = 0.02;
-
-boolean reversing;
-boolean toggledBack;
-
 Client client;
 Car car;
-int id = 0;
+
+int id;
 HashMap<Integer, Enemy> enemies;
 boolean w, s, a, d, space;
 PImage enemySprite;
@@ -22,19 +16,15 @@ SoundFile driftSound, accelerationSound, gameSound;
 void setup() {
   size(1200, 800);
 
-  enemySprite = loadImage("../assets/sprites/enemy_black.png");
   enemies = new HashMap<Integer, Enemy>();
   id = int(random(100000));
   client = new Client(this, "127.0.0.1", 5204);
   car = new Car(new PVector(0, 0));
-  reversing = false;
-  toggledBack = false;
 
   driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
   accelerationSound = new SoundFile(this, "../assets/sounds/acceleration.mp3");
   gameSound = new SoundFile(this, "../assets/sounds/game.mp3");
 
-  gameSound.amp(0.0001);
   gameSound.loop();
 }
 
@@ -68,12 +58,10 @@ void draw() {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
 
       if (!point[0].equals(str(id))) {
-        enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3])));
+        enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3]), "../assets/sprites/enemy_black.png"));
       }
     }
   }
   
-  for (Enemy enemy: enemies.values()) {
-    enemy.display();
-  }
+  for (Enemy enemy: enemies.values()) enemy.display();
 }

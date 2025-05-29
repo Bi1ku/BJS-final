@@ -5,7 +5,7 @@ class Car {
 
   private PVector pos, vel, tract;
   private PImage sprite;
-  private boolean flip;
+  private boolean flip, reversing, toggledBack;
 
   public Car(PVector pos) {
     this.pos = pos;
@@ -138,5 +138,9 @@ class Car {
 
   public PVector getVel() {
     return vel.copy();
+  }
+  
+  public PVector getPos() {
+    return pos;
   }
 }

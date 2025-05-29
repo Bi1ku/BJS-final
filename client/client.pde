@@ -13,7 +13,7 @@ boolean toggledBack;
 Client client;
 Car car;
 int id = 0;
-HashMap<Integer, Response> others;
+HashMap<Integer, Enemy> enemies;
 boolean w, s, a, d, space;
 PImage enemySprite;
 
@@ -23,9 +23,9 @@ void setup() {
   size(1200, 800);
 
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
-  others = new HashMap<Integer, Response>();
+  enemies = new HashMap<Integer, Enemy>();
   id = int(random(100000));
-  client = new Client(this, "149.89.160.126", 5204);
+  client = new Client(this, "127.0.0.1", 5204);
   car = new Car(new PVector(0, 0));
   reversing = false;
   toggledBack = false;
@@ -57,75 +57,7 @@ void keyReleased() {
 void draw() {
   background(0);
 
-  PVector vel = car.getVel();
-  PVector targetTraction = new PVector(0, 0);
-
-  if (w) {
-    PVector forward = PVector.fromAngle(vel.heading());
-    if (reversing) {
-      forward.rotate(PI);
-      if (vel.mag() < 3) {
-        reversing = false;
-        car.setFlip(false);
-      }
-    }
-    car.getTraction().add(vel.copy().normalize().mult(0.2));
-    forward.mult(ACCEL);
-    car.move(forward);
-    toggledBack = false;
-    
-    if (!accelerationSound.isPlaying()) accelerationSound.play();
-  } else {
-    if (accelerationSound.isPlaying()) accelerationSound.stop();
-  }
-  if (s) {
-    if (vel.mag() > 10 && !reversing) {
-      car.move(vel.copy().mult(-DEACCEL));
-    }
-    else {
-      reversing = true;
-      vel.limit(50);
-      PVector backward = PVector.fromAngle(vel.heading());
-      if (!toggledBack) {
-        toggledBack = true;
-        vel.rotate(PI);
-        car.setFlip(true);
-      }
-      else backward.mult(DEACCEL * 40);
-      car.move(backward);
-      car.getTraction().add(vel.copy().normalize().mult(-0.1));
-    }
-  }
-  if (a) {
-    if (space) vel.rotate(constrain(-DEACCEL * (vel.mag() / 2), -DEACCEL, 0));
-    else vel.rotate(constrain(-DEACCEL * (vel.mag() / 60), -DEACCEL, 0));
-  }
-  if (d) {
-    if (space)
-      vel.rotate(constrain(DEACCEL * (vel.mag() / 2), 0, DEACCEL));
-    else vel.rotate(constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
-  }
-  if (space) {
-    if (d) {
-     if (!driftSound.isPlaying()) driftSound.play();
-     targetTraction = vel.copy().mult(0.3).rotate(-PI / 2);
-    }
-    else if (a) {
-      if (!driftSound.isPlaying()) driftSound.play();
-      targetTraction = vel.copy().mult(0.3).rotate(PI / 2);
-    }
-    else driftSound.stop();
-    vel.mult(0.985);
-  } else {
-     car.getTraction().mult(0.9);
-     if (driftSound.isPlaying()) driftSound.stop();
-  }
-  
-  car.getTraction().lerp(targetTraction, 0.1);
-
-  car.move(vel.copy().mult(-FRICTION)); // friction
-
-  car.update();
+  car.update(new boolean[]{ w, a, s, d, space });
 
   if (client.available() > 0) {
     client.write(id + "," + car.pos.x + "," + car.pos.y + "," + car.getVel().heading());
@@ -136,18 +68,12 @@ void draw() {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
 
       if (!point[0].equals(str(id))) {
-        others.put(int(point[0]), new Response(float(point[1]), float(point[2]), float(point[3])));
+        enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3])));
       }
     }
   }
-
-  for (Response other: others.values()) {
-    pushMatrix();
-    imageMode(CENTER);
-    scale(0.1);
-    translate(other.getX(), other.getY());
-    rotate(other.getHeading());
-    image(enemySprite, 0, 0);
-    popMatrix();
+  
+  for (Enemy enemy: enemies.values()) {
+    enemy.display();
   }
 }

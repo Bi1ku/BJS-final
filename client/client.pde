@@ -15,7 +15,7 @@ void setup() {
   enemySprite = loadImage("../assets/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
-  client = new Client(this, "149.89.160.126", 5204);
+  client = new Client(this, "127.0.0.1", 5204);
   mapFr = loadImage("../assets/btdMap.jpg");
   car = new Car(new PVector(0, 0));
 }
@@ -37,10 +37,10 @@ void keyReleased() {
 void draw() {
   background(0);
 
-  if (w) car.move(new PVector(0, -0.5));
-  if (s) car.move(new PVector(0, 0.5));
-  if (a) car.move(new PVector(-0.5, 0));
-  if (d) car.move(new PVector(0.5, 0));
+  if (w) car.move(new PVector(0, -1.5));
+  if (s) car.move(new PVector(0, 1.5));
+  if (a) car.move(new PVector(-1.5, 0));
+  if (d) car.move(new PVector(1.5, 0));
 
   car.move(car.getVel().copy().mult(-0.02)); // friction
   
@@ -92,11 +92,9 @@ void translateScreen(PVector carPos, int scaleFr){
     translate(0, -((height / 2) - carPos.y));
   }
   if(carPos.x >= (mapFr.width * scaleFr) - (width / 2)){
-    translate( (((mapFr.width * scaleFr) - (width / 2)) - carPos.x),0);
+    translate(-(((mapFr.width * scaleFr) - (width / 2)) - carPos.x),0);
   }
-  /*
-  if(carPos.y <= height / 2){
-    translate(0, -((height / 2) - carPos.y));
+  if(carPos.y >= (mapFr.height * scaleFr) - (height / 2)){
+    translate(0,-(((mapFr.height * scaleFr) - (height / 2)) - carPos.y));
   }
-  */
 }

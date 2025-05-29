@@ -13,7 +13,7 @@ boolean toggledBack;
 Client client;
 Car car;
 int id = 0;
-HashMap<Integer, Response> others;
+HashMap<Integer, Enemy> enemies;
 boolean w, s, a, d, space;
 PImage enemySprite;
 
@@ -23,7 +23,7 @@ void setup() {
   size(1200, 800);
 
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
-  others = new HashMap<Integer, Response>();
+  enemies = new HashMap<Integer, Enemy>();
   id = int(random(100000));
   client = new Client(this, "127.0.0.1", 5204);
   car = new Car(new PVector(0, 0));
@@ -57,7 +57,7 @@ void keyReleased() {
 void draw() {
   background(0);
 
-  car.(new boolean[]{ w, a, s, d, space });
+  car.update(new boolean[]{ w, a, s, d, space });
 
   if (client.available() > 0) {
     client.write(id + "," + car.pos.x + "," + car.pos.y + "," + car.getVel().heading());
@@ -68,18 +68,12 @@ void draw() {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
 
       if (!point[0].equals(str(id))) {
-        others.put(int(point[0]), new Response(float(point[1]), float(point[2]), float(point[3])));
+        enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3])));
       }
     }
   }
-
-  for (Response other: others.values()) {
-    pushMatrix();
-    imageMode(CENTER);
-    scale(0.1);
-    translate(other.getX(), other.getY());
-    rotate(other.getHeading());
-    image(enemySprite, 0, 0);
-    popMatrix();
+  
+  for (Enemy enemy: enemies.values()) {
+    enemy.display();
   }
 }

@@ -36,7 +36,6 @@ class Car {
     rotate(vel.heading());
 
     if (flip) rotate(PI);
-
     image(sprite, 0, 0);
 
     popMatrix();

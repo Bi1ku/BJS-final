@@ -28,7 +28,7 @@ void setup() {
   enemies = new HashMap<Integer, Enemy>();
   id = int(random(100000));
   client = new Client(this, "127.0.0.1", 5204);
-  mapFr = loadImage("../assets/btdMap.jpg");
+  mapFr = loadImage("../assets/sprites/btdMap.jpg");
   car = new Car(new PVector(0, 0));
   reversing = false;
   toggledBack = false;

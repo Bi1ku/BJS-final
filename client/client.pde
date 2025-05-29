@@ -25,7 +25,7 @@ void setup() {
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
-  client = new Client(this, "149.89.160.126", 5204);
+  client = new Client(this, "127.0.0.1", 5204);
   car = new Car(new PVector(0, 0));
   reversing = false;
   toggledBack = false;
@@ -57,75 +57,7 @@ void keyReleased() {
 void draw() {
   background(0);
 
-  PVector vel = car.getVel();
-  PVector targetTraction = new PVector(0, 0);
-
-  if (w) {
-    PVector forward = PVector.fromAngle(vel.heading());
-    if (reversing) {
-      forward.rotate(PI);
-      if (vel.mag() < 3) {
-        reversing = false;
-        car.setFlip(false);
-      }
-    }
-    car.getTract().add(vel.copy().normalize().mult(0.2));
-    forward.mult(ACCEL);
-    car.move(forward);
-    toggledBack = false;
-    
-    if (!accelerationSound.isPlaying()) accelerationSound.play();
-  } else {
-    if (accelerationSound.isPlaying()) accelerationSound.stop();
-  }
-  if (s) {
-    if (vel.mag() > 10 && !reversing) {
-      car.move(vel.copy().mult(-DEACCEL));
-    }
-    else {
-      reversing = true;
-      vel.limit(50);
-      PVector backward = PVector.fromAngle(vel.heading());
-      if (!toggledBack) {
-        toggledBack = true;
-        vel.rotate(PI);
-        car.setFlip(true);
-      }
-      else backward.mult(DEACCEL * 40);
-      car.move(backward);
-      car.getTract().add(vel.copy().normalize().mult(-0.1));
-    }
-  }
-  if (a) {
-    if (space) vel.rotate(constrain(-DEACCEL * (vel.mag() / 2), -DEACCEL, 0));
-    else vel.rotate(constrain(-DEACCEL * (vel.mag() / 60), -DEACCEL, 0));
-  }
-  if (d) {
-    if (space)
-      vel.rotate(constrain(DEACCEL * (vel.mag() / 2), 0, DEACCEL));
-    else vel.rotate(constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
-  }
-  if (space) {
-    if (d) {
-     if (!driftSound.isPlaying()) driftSound.play();
-     targetTraction = vel.copy().mult(0.3).rotate(-PI / 2);
-    }
-    else if (a) {
-      if (!driftSound.isPlaying()) driftSound.play();
-      targetTraction = vel.copy().mult(0.3).rotate(PI / 2);
-    }
-    else driftSound.stop();
-    vel.mult(0.985);
-  } else {
-    car.getTract().mult(0.9);
-    if (driftSound.isPlaying()) driftSound.stop();
-  }
-  
-  car.getTract().lerp(targetTraction, 0.1);
-
-  car.move(vel.copy().mult(-FRICTION)); // friction
-
-  car.update();
+  car.(new boolean[]{ w, a, s, d, space });
 
   if (client.available() > 0) {
     client.write(id + "," + car.pos.x + "," + car.pos.y + "," + car.getVel().heading());

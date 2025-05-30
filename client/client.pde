@@ -76,8 +76,9 @@ void draw() {
     client.write(clientId + "," + car.pos.x + "," + car.pos.y + "," + car.getVel().heading());
 
     String res = client.readString();
-
-    if (res != null && res.length() > 5) {
+    
+    System.out.println(res);
+    if (res != null && res.length() > 5 && !res.contains("�")) {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
       
       if (!point[0].equals(str(clientId))) {

@@ -77,15 +77,16 @@ void draw() {
 
     String res = client.readString();
 
-    if (res != null && res.length() > 5 && res.length() < 10) {
+    if (res != null && res.length() > 5) {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
-
+      
       if (!point[0].equals(str(clientId))) {
         enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3])));
       }
     }
   }
   
+  System.out.println(enemies);
   for (Enemy enemy: enemies.values()) enemy.display();
 }
 

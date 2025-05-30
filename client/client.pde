@@ -20,16 +20,16 @@ PImage enemySprite;
 Map map = new Map();
 SoundFile driftSound, accelerationSound, gameSound;
 
-float scale = 0.05;
+float scale = 0.04;
 
 void setup() {
   size(1920, 1080);
-  map.m = loadImage("../assets/racetrack.jpg");
+  map.m = loadImage("../assets/track.jpg");
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
   client = new Client(this, "149.89.160.126", 5204);
-  car = new Car(new PVector(width* 1/scale - 5500, height *  1/scale - 5000));
+  car = new Car(new PVector(width* 1/scale - 100, height *  1/scale - 100));
   reversing = false;
   toggledBack = false;
 
@@ -62,7 +62,9 @@ void draw() {
   map.updateMap();
   PVector vel = car.getVel();
   PVector targetTraction = new PVector(0, 0);
-
+  if(!map.isGrey(car.pos.x, car.pos.y)){
+      car.borderCollision();
+    }
   if (w) {
     PVector forward = PVector.fromAngle(vel.heading());
     if (reversing) {

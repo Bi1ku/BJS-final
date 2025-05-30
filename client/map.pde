@@ -1,6 +1,6 @@
 class Map{
   PImage m;
-  float scale = 0.05;
+  float scale = 0.04;
   
   void updateMap(){
     m.resize(int(1280 * 1.5), int(720 * 1.5));
@@ -34,6 +34,7 @@ class Map{
     //println(x * scale + " " + y * scale);
     println(red(c) + " " + green(c) + " " + blue(c));
     int margin = 5;
+    if(!(red(c) < 140 && red(c) > 120 && blue(c) < 140 && blue(c) > 120 && green(c) < 140 && green(c) > 120)) return false;
     return Math.abs(red(c) - green(c)) <= margin && Math.abs(blue(c) - red(c)) <= margin;
   }
 }

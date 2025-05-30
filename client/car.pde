@@ -4,8 +4,8 @@ class Car {
   private PImage sprite;
   private boolean flip;
   private PVector traction;
-  private PVector prevPos;  
-  float scale = 0.05;
+  private PVector prevPos = new PVector();  
+  float scale = 0.04;
   
   public Car(PVector pos) {
     this.pos = pos;
@@ -31,18 +31,18 @@ class Car {
   public void borderCollision(){
     car.vel = new PVector(0,0);
     PVector difference = pos.copy().sub(prevPos);
-    int recoil = 50;
+    int recoil = 40;
     if(difference.x < 0){
-      car.pos.x -= (difference.x - recoil);
+      car.pos.x = prevPos.x + ((difference.x + recoil));
     }
     else{
-      car.pos.x -= (difference.x + recoil);
+      car.pos.x = prevPos.x - (difference.x + recoil);
     }
     if(difference.y < 0){
-      car.pos.y -= (difference.y - recoil);
+      car.pos.y = prevPos.y + (difference.y + recoil);
     }
     else{
-      car.pos.y -= (difference.y + recoil);
+      car.pos.y = prevPos.y - (difference.y + recoil);
     }
     display(); 
   }

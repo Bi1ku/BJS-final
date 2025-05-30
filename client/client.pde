@@ -65,7 +65,6 @@ void draw() {
   int scaleFr = 5;
   PVector carPos = car.getPos();
   translateScreen(carPos, scaleFr);
-  //car.update();
   
   scale(scaleFr);
   imageMode(CORNER);

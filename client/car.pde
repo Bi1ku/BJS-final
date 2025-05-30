@@ -15,7 +15,6 @@ class Car {
     this.vel.limit(200);
     
     this.sprite = loadImage("../assets/sprites/player.png");
-    this.flip = false;
   }
 
   public void update(boolean[] keys) {
@@ -115,13 +114,13 @@ class Car {
       if (d) {
        if (!driftSound.isPlaying()) driftSound.play();
 
-       targetTraction = vel.copy().mult(0.3).rotate(-PI / 2);
+       targetTraction = vel.copy().mult(0.5).rotate(-PI / 2);
       }
 
       else if (a) {
         if (!driftSound.isPlaying()) driftSound.play();
 
-        targetTraction = vel.copy().mult(0.3).rotate(PI / 2);
+        targetTraction = vel.copy().mult(0.5).rotate(PI / 2);
       }
 
       else driftSound.stop();
@@ -133,7 +132,7 @@ class Car {
       if (driftSound.isPlaying()) driftSound.stop();
     }
 
-    tract.lerp(targetTraction, 0.1);
+    tract.lerp(targetTraction, 0.075);
   }
 
   public PVector getVel() {

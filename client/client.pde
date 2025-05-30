@@ -3,9 +3,7 @@ import processing.net.*;
 import java.util.Map;
 import java.util.Arrays;
 
-final float ACCEL = 4.0;
-final float DEACCEL = 0.04;
-final float FRICTION = 0.02;
+PImage mapFr;
 
 boolean reversing;
 boolean toggledBack;
@@ -14,7 +12,7 @@ Car car;
 boolean[] inputs;
 
 Client client;
-int clientId = 0;
+int clientId;
 
 HashMap<Integer, Enemy> enemies;
 PImage enemySprite;
@@ -28,6 +26,7 @@ void setup() {
   enemies = new HashMap<Integer, Enemy>();
   clientId = int(random(100000));
   client = new Client(this, "127.0.0.1", 5204);
+  mapFr = loadImage("../assets/sprites/btdMap.jpg");
   car = new Car(new PVector(0, 0));
   inputs = new boolean[5];
 
@@ -57,7 +56,21 @@ void keyReleased() {
 void draw() {
   background(0);
 
+  pushMatrix();
+  
+  int scaleFr = 5;
+  PVector carPos = car.getPos();
+  translateScreen(carPos, scaleFr);
+  
+  scale(scaleFr);
+  imageMode(CORNER);
+  image(mapFr, 0, 0);
+  scale(1.0 / scaleFr);
+
   car.update(inputs);
+
+  popMatrix();
+
 
   if (client.available() > 0) {
     client.write(clientId + "," + car.pos.x + "," + car.pos.y + "," + car.getVel().heading());
@@ -74,4 +87,23 @@ void draw() {
   }
   
   for (Enemy enemy: enemies.values()) enemy.display();
+}
+
+void translateScreen(PVector carPos, int scaleFr){
+  translate(width / 2 - carPos.x, height / 2 - carPos.y);
+  if (carPos.x <= width / 2){
+    translate( - ((width / 2) - carPos.x), 0);
+  }
+
+  if (carPos.y <= height / 2){
+    translate(0, -((height / 2) - carPos.y));
+  }
+
+  if (carPos.x >= (mapFr.width * scaleFr) - (width / 2)){
+    translate(-(((mapFr.width * scaleFr) - (width / 2)) - carPos.x),0);
+  }
+
+  if (carPos.y >= (mapFr.height * scaleFr) - (height / 2)){
+    translate(0,-(((mapFr.height * scaleFr) - (height / 2)) - carPos.y));
+  }
 }

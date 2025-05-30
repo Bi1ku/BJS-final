@@ -12,8 +12,7 @@ class Car {
  
     this.tract = new PVector(0, 0);
     this.vel = new PVector(0, 0);
-    this.vel.limit(200);
-    
+
     this.sprite = loadImage("../assets/sprites/player.png");
   }
 
@@ -30,8 +29,10 @@ class Car {
     pushMatrix();
 
     imageMode(CENTER);
-    scale(0.1);
-    translate(pos.x, pos.y);
+
+    float scaleNum = 0.1;
+    scale(scaleNum);
+    translate((1.0 / scaleNum) * pos.x, (1.0 / scaleNum) * pos.y);
     rotate(vel.heading());
 
     if (flip) rotate(PI);
@@ -137,5 +138,9 @@ class Car {
 
   public PVector getVel() {
     return vel.copy();
+  }
+  
+  public PVector getPos() {
+    return pos.copy();
   }
 }

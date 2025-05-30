@@ -5,18 +5,16 @@ import java.util.Arrays;
 
 PImage mapFr;
 
-final float ACCEL = 4.0;
-final float DEACCEL = 0.04;
-final float FRICTION = 0.02;
-
 boolean reversing;
 boolean toggledBack;
 
-Client client;
 Car car;
-int id = 0;
+boolean[] inputs;
+
+Client client;
+int clientId;
+
 HashMap<Integer, Enemy> enemies;
-boolean w, s, a, d, space;
 PImage enemySprite;
 
 SoundFile driftSound, accelerationSound, gameSound;
@@ -26,35 +24,33 @@ void setup() {
 
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
   enemies = new HashMap<Integer, Enemy>();
-  id = int(random(100000));
+  clientId = int(random(100000));
   client = new Client(this, "127.0.0.1", 5204);
   mapFr = loadImage("../assets/sprites/btdMap.jpg");
   car = new Car(new PVector(0, 0));
-  reversing = false;
-  toggledBack = false;
+  inputs = new boolean[5];
 
   driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
   accelerationSound = new SoundFile(this, "../assets/sounds/acceleration.mp3");
   gameSound = new SoundFile(this, "../assets/sounds/game.mp3");
 
-  gameSound.amp(0.0001);
   gameSound.loop();
 }
 
 void keyPressed() {
-  if (key == 'w') w = true;
-  if (key == 's') s = true;
-  if (key == 'a') a = true;
-  if (key == 'd') d = true;
-  if (key == ' ') space = true;
+  if (key == 'w') inputs[0] = true;
+  if (key == 'a') inputs[1] = true;
+  if (key == 's') inputs[2] = true;
+  if (key == 'd') inputs[3] = true;
+  if (key == ' ') inputs[4] = true;
 }
 
 void keyReleased() {
-  if (key == 'w') w = false;
-  if (key == 's') s = false;
-  if (key == 'a') a = false;
-  if (key == 'd') d = false;
-  if (key == ' ') space = false;
+  if (key == 'w') inputs[0] = false;
+  if (key == 'a') inputs[1] = false;
+  if (key == 's') inputs[2] = false;
+  if (key == 'd') inputs[3] = false;
+  if (key == ' ') inputs[4] = false;
 }
 
 void draw() {
@@ -65,46 +61,49 @@ void draw() {
   int scaleFr = 5;
   PVector carPos = car.getPos();
   translateScreen(carPos, scaleFr);
-  //car.update();
   
   scale(scaleFr);
   imageMode(CORNER);
   image(mapFr, 0, 0);
   scale(1.0 / scaleFr);
-  car.update(new boolean[]{ w, a, s, d, space });
+
+  car.update(inputs);
+
   popMatrix();
 
+
   if (client.available() > 0) {
-    client.write(id + "," + car.pos.x + "," + car.pos.y + "," + car.getVel().heading());
+    client.write(clientId + "," + car.pos.x + "," + car.pos.y + "," + car.getVel().heading());
 
     String res = client.readString();
 
     if (res != null && res.length() > 5 && res.length() < 10) {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
 
-      if (!point[0].equals(str(id))) {
+      if (!point[0].equals(str(clientId))) {
         enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3])));
       }
     }
   }
   
-  for (Enemy enemy: enemies.values()) {
-    enemy.display();
-  }
+  for (Enemy enemy: enemies.values()) enemy.display();
 }
 
 void translateScreen(PVector carPos, int scaleFr){
   translate(width / 2 - carPos.x, height / 2 - carPos.y);
-  if(carPos.x <= width / 2){
-    translate( - ((width / 2) - carPos.x),0);
+  if (carPos.x <= width / 2){
+    translate( - ((width / 2) - carPos.x), 0);
   }
-  if(carPos.y <= height / 2){
+
+  if (carPos.y <= height / 2){
     translate(0, -((height / 2) - carPos.y));
   }
-  if(carPos.x >= (mapFr.width * scaleFr) - (width / 2)){
+
+  if (carPos.x >= (mapFr.width * scaleFr) - (width / 2)){
     translate(-(((mapFr.width * scaleFr) - (width / 2)) - carPos.x),0);
   }
-  if(carPos.y >= (mapFr.height * scaleFr) - (height / 2)){
+
+  if (carPos.y >= (mapFr.height * scaleFr) - (height / 2)){
     translate(0,-(((mapFr.height * scaleFr) - (height / 2)) - carPos.y));
   }
 }

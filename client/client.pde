@@ -78,7 +78,7 @@ void draw() {
     String res = client.readString();
     
     System.out.println(res);
-    if (res != null && res.length() > 5 && !res.contains("�")) {
+    if (res != null && res.length() > 5 && !res.contains("�������")) {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
       
       if (!point[0].equals(str(clientId))) {

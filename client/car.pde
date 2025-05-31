@@ -1,17 +1,25 @@
 class Car {
-  private static final float ACCEL = 4.0;
+  private static final float ACCEL = 6.0;
   private static final float DEACCEL = 0.04;
   private static final float FRICTION = 0.978;
 
-  private PVector pos, vel, tract;
-  private PImage sprite;
-  private boolean flip;
+  private float scale, recipScale;
 
-  public Car(PVector pos) {
+  private PVector pos, vel, tract, offset;
+  private PImage sprite;
+
+  private boolean flip, stopX, stopY;
+
+  public Car(PVector pos, float scale) {
     this.pos = pos;
+
+    this.scale = scale;
+    this.recipScale = 1 / scale;
  
     this.tract = new PVector(0, 0);
     this.vel = new PVector(0, 0);
+    this.offset = new PVector(0, 0);
+    this.vel.limit(300);
 
     this.sprite = loadImage("../assets/sprites/player.png");
   }
@@ -29,10 +37,13 @@ class Car {
     pushMatrix();
 
     imageMode(CENTER);
+    scale(scale);
 
-    float scaleNum = 0.1;
-    scale(scaleNum);
-    translate((1.0 / scaleNum) * pos.x, (1.0 / scaleNum) * pos.y);
+    if (stopX && stopY) translate(width / 2 * recipScale, height / 2 * recipScale);
+    else if (stopX) translate(width / 2 * recipScale, pos.y + offset.y);
+    else if (stopY) translate(pos.x + offset.x, height / 2 * recipScale);
+    else translate(pos.x + offset.x, pos.y + offset.y);
+
     rotate(vel.heading());
 
     if (flip) rotate(PI);
@@ -109,7 +120,7 @@ class Car {
         vel.rotate(constrain(DEACCEL * (vel.mag() / 2), 0, DEACCEL));
       else vel.rotate(constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
     }
-    
+                          
     // DRIFTING
     if (space) {
       if (d) {
@@ -136,11 +147,35 @@ class Car {
     tract.lerp(targetTraction, 0.075);
   }
 
+  public float getScale() {
+    return scale;
+  }
+
+  public float getRecipScale() {
+    return recipScale;
+  }
+
   public PVector getVel() {
     return vel.copy();
   }
   
   public PVector getPos() {
     return pos.copy();
+  }
+
+  public PVector getOffset() {
+    return offset.copy();
+  }
+
+  public void setOffset(PVector offset) {
+    this.offset = offset;
+  }
+
+  public void setStopX(boolean stopX) {
+    this.stopX = stopX;
+  }
+
+  public void setStopY(boolean stopY) {
+    this.stopY = stopY;
   }
 }

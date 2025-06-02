@@ -1,6 +1,6 @@
 class Map{
   PImage m;
-  float scale = 0.04;
+  float scale = 0.05;
   
   void updateMap(){
     m.resize(int(1280 * 1.5), int(720 * 1.5));

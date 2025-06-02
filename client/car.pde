@@ -5,7 +5,7 @@ class Car {
   private boolean flip;
   private PVector traction;
   private PVector prevPos = new PVector();  
-  float scale = 0.04;
+  float scale = 0.05;
   
   public Car(PVector pos) {
     this.pos = pos;

@@ -24,13 +24,13 @@ float scale = 0.05;
 //127.0.0.1
 void setup() {
   size(1920, 1080);
-  map.m = loadImage("../assets/track.jpg");
+  map.m = loadImage("../assets/track.png");
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
   client = new Client(this, "127.0.0.1", 5204);
   //car = new Car(new PVector(width* 1/scale - 1000, height *  1/scale - 1000));
-    car = new Car(new PVector(1444 * 1/scale, 140 * 1/scale));
+    car = new Car(new PVector(1420 * 1/scale, 135 * 1/scale));
 
   reversing = false;
   toggledBack = false;

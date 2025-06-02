@@ -33,8 +33,10 @@ class Map{
     color c = m.get(int(x * scale), int(y * scale));
     //println(x * scale + " " + y * scale);
     println(red(c) + " " + green(c) + " " + blue(c));
-    int margin = 5;
-    if(!(red(c) < 140 && red(c) > 120 && blue(c) < 140 && blue(c) > 120 && green(c) < 140 && green(c) > 120)) return false;
+    int margin = 8;
+    int upper = 160;
+    int lower = 150;
+    if(!(red(c) < upper && red(c) > lower && blue(c) < upper && blue(c) > lower && green(c) < upper && green(c) > lower)) return false;
     return Math.abs(red(c) - green(c)) <= margin && Math.abs(blue(c) - red(c)) <= margin;
   }
 }

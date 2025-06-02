@@ -31,7 +31,7 @@ void setup() {
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
   enemies = new HashMap<Integer, Enemy>();
 
-  map = new Map("../assets/maps/btdMap.jpg", 5, car);
+  map = new Map("../assets/maps/btdMap.jpg", 5, car, enemies);
 
   driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
   accelerationSound = new SoundFile(this, "../assets/sounds/acceleration.mp3");
@@ -60,21 +60,20 @@ void draw() {
   background(0);
 
   map.update();
+  for (Enemy enemy: enemies.values()) enemy.display();
   car.update(inputs);
 
   if (client.available() > 0) {
-    client.write(clientId + "," + car.pos.x + "," + car.pos.y + "," + car.getVel().heading());
+    client.write(clientId + "," + car.getPos().x + "," + car.getPos().y + "," + car.getVel().heading());
 
     String res = client.readString();
     
-    if (res != null && res.contains("\\!\\@\\#\\$")) {
+    if (res != null && res.contains("!@#$")) {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
       
       if (!point[0].equals(str(clientId))) {
-        enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3])));
+        enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3]), 0.2));
       }
     }
   }
-  
-  for (Enemy enemy: enemies.values()) enemy.display();
 }

@@ -7,11 +7,15 @@ class Map {
 
   private boolean changedXR, changedXL, changedYU, changedYD;
   private float boundXR, boundXL, boundYU, boundYD;
+  
+  private HashMap<Integer, Enemy> enemies;
 
-  public Map(String path, int scale, Car car) {
+  public Map(String path, int scale, Car car, HashMap<Integer, Enemy> enemies) {
     this.map = loadImage(path);
     this.scale = scale;
     this.car = car;
+    
+    this.enemies = enemies;
   }
 
   public void translateScreen() {
@@ -29,6 +33,7 @@ class Map {
       }
 
       translate(transX, 0);
+      for (Enemy enemy: enemies.values()) enemy.getOffset().x = transX;
 
       offset.x = (-boundXR + width / 2) * recipScale;
       car.setOffset(offset);
@@ -38,7 +43,10 @@ class Map {
 
     else if (carPos.x > width / 2) {
       transX = -carPos.x + width / 2;
+      
       translate(transX, 0);
+      for (Enemy enemy: enemies.values()) enemy.getOffset().x = transX;
+      
       car.setStopX(true);
     } else {
       if (!changedXL) {
@@ -60,6 +68,7 @@ class Map {
       }
 
       translate(0, transY);
+      for (Enemy enemy: enemies.values()) enemy.getOffset().y = transY;
 
       offset.y = (-boundYU + height / 2) * recipScale;
       car.setOffset(offset);
@@ -69,7 +78,10 @@ class Map {
 
     else if (carPos.y > height / 2) {
       transY = -carPos.y + height / 2;
+      
       translate(0, transY);
+      for (Enemy enemy: enemies.values()) enemy.getOffset().y = transY;
+      
       car.setStopY(true);
     } else {
       if (!changedYD) {

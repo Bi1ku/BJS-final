@@ -16,6 +16,7 @@ HashMap<Integer, Enemy> enemies;
 PImage enemySprite;
 
 Map map;
+HUD hud;
 
 SoundFile driftSound, accelerationSound, gameSound;
 
@@ -32,6 +33,7 @@ void setup() {
   enemies = new HashMap<Integer, Enemy>();
 
   map = new Map("../assets/maps/btdMap.jpg", 5, car, enemies);
+  hud = new HUD("../assets/fonts/mono.ttf");
 
   driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
   accelerationSound = new SoundFile(this, "../assets/sounds/acceleration.mp3");
@@ -62,6 +64,7 @@ void draw() {
   map.update();
   for (Enemy enemy: enemies.values()) enemy.display();
   car.update(inputs);
+  hud.display();
 
   if (client.available() > 0) {
     client.write(clientId + "," + car.getPos().x + "," + car.getPos().y + "," + car.getVel().heading());

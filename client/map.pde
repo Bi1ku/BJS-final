@@ -40,3 +40,7 @@ class Map{
     return Math.abs(red(c) - green(c)) <= margin && Math.abs(blue(c) - red(c)) <= margin;
   }
 }
+
+//255 0 4
+
+//47 0 255 : blue

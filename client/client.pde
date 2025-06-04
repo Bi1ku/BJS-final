@@ -7,6 +7,7 @@ boolean reversing;
 boolean toggledBack;
 
 boolean start;
+boolean raceStart;
 
 Client client;
 int clientId;

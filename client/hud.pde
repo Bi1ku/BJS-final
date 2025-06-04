@@ -1,6 +1,7 @@
 class HUD {
   private PFont font;
   private int millisLapsed, startTime;
+  private boolean raceStart;
   
   public HUD(String path) {
     this.font = createFont(path, 128);
@@ -37,8 +38,25 @@ class HUD {
     startTime = millis();
   }
   
+  public void setRaceStart(boolean r){
+    raceStart = r;
+  }
+  
   public void display() {
     backdrop();
-    times();
+    if(!raceStart){ //if race hasnt started
+      ready();
+    }
+    else{
+      times();
+    }
+  }
+  
+  public void ready(){
+    fill(255);
+    textAlign(CENTER, TOP);
+    textFont(font);
+    textSize(34);
+    text("waiting for players" , width / 2, 25);
   }
 }

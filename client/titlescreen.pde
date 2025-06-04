@@ -5,7 +5,7 @@ class TitleScreen{
     this.picture = loadImage(path);
   }
   
-  public void display(){
+  public void display(){ //only activates is start is false
     imageMode(CORNER);
     image(picture, 0, 0);
   }

@@ -1,21 +1,16 @@
 class HUD {
   private PFont font;
+  private int millisLapsed, startTime;
   
   public HUD(String path) {
     this.font = createFont(path, 128);
   }
   
   public String formatTime() {
-    int time = millis();
-    String res = "" + minute() + ":";
-    
-    if (second() < 10) res += "0" + second() + ".";
-    else res += second() + ".";
-    
-    int millis = millis() / 100;
-    if (millis < 10) res += "0" + millis;
-    else res += millis;
-    
+    millisLapsed = millis() - startTime; // millis() gives time since start, secs() or mins() give current time
+    int secondsLapsed = (millisLapsed / 1000) % 60;
+    int minsLapsed = secondsLapsed / 60;
+    String res = nf(minsLapsed,2) + ":" + nf(secondsLapsed,2);
     return res;
   }
   
@@ -36,6 +31,10 @@ class HUD {
     rect(0, 0, width, height / 6);
     
     popMatrix();
+  }
+  
+  public void setStartTime(){
+    startTime = millis();
   }
   
   public void display() {

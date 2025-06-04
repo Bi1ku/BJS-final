@@ -6,6 +6,8 @@ import java.util.Arrays;
 boolean reversing;
 boolean toggledBack;
 
+boolean start;
+
 Client client;
 int clientId;
 
@@ -16,6 +18,7 @@ HashMap<Integer, Enemy> enemies;
 PImage enemySprite;
 
 Map map;
+TitleScreen titleScreen;
 HUD hud;
 
 SoundFile driftSound, accelerationSound, gameSound;
@@ -33,6 +36,7 @@ void setup() {
   enemies = new HashMap<Integer, Enemy>();
 
   map = new Map("../assets/maps/btdMap.jpg", 5, car, enemies);
+  titleScreen = new TitleScreen("../assets/maps/ojv.png");
   hud = new HUD("../assets/fonts/mono.ttf");
 
   driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
@@ -43,39 +47,51 @@ void setup() {
 }
 
 void keyPressed() {
-  if (key == 'w') inputs[0] = true;
-  if (key == 'a') inputs[1] = true;
-  if (key == 's') inputs[2] = true;
-  if (key == 'd') inputs[3] = true;
-  if (key == ' ') inputs[4] = true;
+  if(!start){
+    start = true;
+    hud.setStartTime();
+  }
+  else{
+    if (key == 'w') inputs[0] = true;
+    if (key == 'a') inputs[1] = true;
+    if (key == 's') inputs[2] = true;
+    if (key == 'd') inputs[3] = true;
+    if (key == ' ') inputs[4] = true;
+  }
 }
 
 void keyReleased() {
-  if (key == 'w') inputs[0] = false;
-  if (key == 'a') inputs[1] = false;
-  if (key == 's') inputs[2] = false;
-  if (key == 'd') inputs[3] = false;
-  if (key == ' ') inputs[4] = false;
+  if(start){
+    if (key == 'w') inputs[0] = false;
+    if (key == 'a') inputs[1] = false;
+    if (key == 's') inputs[2] = false;
+    if (key == 'd') inputs[3] = false;
+    if (key == ' ') inputs[4] = false;
+  }
 }
 
 void draw() {
   background(0);
-
-  map.update();
-  for (Enemy enemy: enemies.values()) enemy.display();
-  car.update(inputs);
-  hud.display();
-
-  if (client.available() > 0) {
-    client.write(clientId + "," + car.getPos().x + "," + car.getPos().y + "," + car.getVel().heading());
-
-    String res = client.readString();
-    
-    if (res != null && res.contains("!@#$")) {
-      String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
+  if(!start){
+    titleScreen.display();
+  }
+  else{
+    map.update();
+    for (Enemy enemy: enemies.values()) enemy.display();
+    car.update(inputs);
+    hud.display();
+  
+    if (client.available() > 0) {
+      client.write(clientId + "," + car.getPos().x + "," + car.getPos().y + "," + car.getVel().heading());
+  
+      String res = client.readString();
       
-      if (!point[0].equals(str(clientId))) {
-        enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3]), 0.2));
+      if (res != null && res.contains("!@#$")) {
+        String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
+        
+        if (!point[0].equals(str(clientId))) {
+          enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3]), 0.2));
+        }
       }
     }
   }

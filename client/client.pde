@@ -15,7 +15,7 @@ Client client;
 Car car;
 int id = 0;
 HashMap<Integer, Response> others;
-boolean w, s, a, d, space;
+boolean w, s, a, d, space, wReady, sReady, aReady, dReady;
 PImage enemySprite;
 Map map = new Map();
 SoundFile driftSound, accelerationSound, gameSound;
@@ -24,7 +24,7 @@ float scale = 0.05;
 //127.0.0.1
 void setup() {
   size(1920, 1080);
-  map.m = loadImage("../assets/racetrack.png");
+  map.m = loadImage("../assets/hitbox2.jpg");
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
@@ -44,30 +44,32 @@ void setup() {
 }
 
 void keyPressed() {
-  if (key == 'w') w = true;
-  if (key == 's') s = true;
-  if (key == 'a') a = true;
-  if (key == 'd') d = true;
+  if (key == 'w' && wReady) w = true;
+  if (key == 's' && sReady) s = true;
+  if (key == 'a' && aReady) a = true;
+  if (key == 'd' && dReady) d = true;
   if (key == ' ') space = true;
 }
 
 void keyReleased() {
-  if (key == 'w') w = false;
-  if (key == 's') s = false;
-  if (key == 'a') a = false;
-  if (key == 'd') d = false;
+  if (key == 'w' && !wReady) w = false;
+  if (key == 's' && !sReady) s = false;
+  if (key == 'a' && !aReady) a = false;
+  if (key == 'd' && !dReady) d = false;
   if (key == ' ') space = true;
 }
 
 void draw() {
   background(0);
-  println("COORD " + mouseX + " " + mouseY);
+  //println("COORD " + mouseX + " " + mouseY);
   map.updateMap();
   PVector vel = car.getVel();
   PVector targetTraction = new PVector(0, 0);
-  if(!map.isGrey(car.pos.x, car.pos.y)){
-      car.borderCollision();
-    }
+  //if(!map.isBorder(car.pos.x, car.pos.y)){
+  //    reversing = true;
+  //    car.borderCollision();
+  //    reversing = false;
+  //}
   if (w) {
     PVector forward = PVector.fromAngle(vel.heading());
     if (reversing) {
@@ -81,8 +83,12 @@ void draw() {
     forward.mult(ACCEL);
     car.move(forward);
     toggledBack = false;
-    if(!map.isGrey(car.pos.x, car.pos.y)){
-      car.borderCollision();
+    if(!map.isBorder(car.pos.x, car.pos.y)){
+
+      wReady = false;
+      vel = new PVector(0,0); 
+      s = true;
+      w = false;
     }
     if (!accelerationSound.isPlaying()) accelerationSound.play();
   } else {
@@ -104,26 +110,42 @@ void draw() {
       else backward.mult(DEACCEL * 40);
       car.move(backward);
       car.getTraction().add(vel.copy().normalize().mult(-0.1));
-      if(!map.isGrey(car.pos.x, car.pos.y)){
-      car.borderCollision();
-    }
+      if(!map.isBorder(car.pos.x, car.pos.y)){
+
+        sReady = false;
+        vel = new PVector(0,0); 
+        w = true;
+        s = false;
+      }
     }
   }
   if (a) {
     if (space) vel.rotate(constrain(-DEACCEL * (vel.mag() / 2), -DEACCEL, 0));
     else vel.rotate(constrain(-DEACCEL * (vel.mag() / 60), -DEACCEL, 0));
-    if(!map.isGrey(car.pos.x, car.pos.y)){
-      car.borderCollision();
+    if(!map.isBorder(car.pos.x, car.pos.y)){
+
+      aReady = false;
+      vel = new PVector(0,0); 
+      d = true;
+      a = false;
     }
   }
   if (d) {
     if (space)
       vel.rotate(constrain(DEACCEL * (vel.mag() / 2), 0, DEACCEL));
     else vel.rotate(constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
-    if(!map.isGrey(car.pos.x, car.pos.y)){
-      car.borderCollision();
+    if(!map.isBorder(car.pos.x, car.pos.y)){
+
+      dReady = false;
+      vel = new PVector(0,0); 
+      a = true;
+      d = false;
     }
   }
+  wReady = true;
+  sReady = true;
+  aReady = true;
+  dReady = true;
   if (space) {
     if (d) {
      if (!driftSound.isPlaying()) driftSound.play();

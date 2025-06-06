@@ -28,6 +28,14 @@ class Map{
     return true;
   }
   
+  
+  
+  boolean isBorder(float x, float y){
+    color c = m.get(int(x*scale), int(y * scale));
+    println(red(c) + " " + blue(c) + " " + green(c));
+    return (!(red(c) == 255 && blue(c) == 4 && green(c) == 0));
+  }
+  
   boolean isGrey(float x, float y) {
     if (x < 0 || y < 0 || x >= m.width * (1/scale) || y >= m.height * 1/(scale)) return false;
     color c = m.get(int(x * scale), int(y * scale));

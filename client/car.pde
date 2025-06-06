@@ -28,6 +28,10 @@ class Car {
     display();
   }
   
+  //String oppositeKey(String key){
+    
+  //}
+  
   public void borderCollision(){
     if(!start){
       PVector prevVel = vel.copy();

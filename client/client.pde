@@ -48,17 +48,23 @@ void setup() {
 }
 
 void keyPressed() {
-  if (!start) {
-    start = true;
-    hud.setStartTime();
+  if (!start) start = true;
+
+  else {
+    if (key == 'r') {
+      raceStart = true;
+      hud.setStartTime();
+    }
+    
+    if (raceStart) {
+      if (key == 'w') inputs[0] = true;
+      if (key == 'a') inputs[1] = true;
+      if (key == 's') inputs[2] = true;
+      if (key == 'd') inputs[3] = true;
+      if (key == ' ') inputs[4] = true;
+      if (key == 'v') inputs[5] = true;
+    }
   }
-  
-  if (key == 'w') inputs[0] = true;
-  if (key == 'a') inputs[1] = true;
-  if (key == 's') inputs[2] = true;
-  if (key == 'd') inputs[3] = true;
-  if (key == ' ') inputs[4] = true;
-  if (key == 'v') inputs[5] = true;
 }
 
 void keyReleased() {
@@ -75,12 +81,20 @@ void draw() {
   if (!start) titleScreen.display();
   
   else {
+    if (raceStart && enemies.size() >= 2)
+      hud.setRaceStart(true);
+      
     map.update();
-    for (Enemy enemy: enemies.values()) enemy.display();
+    for (Enemy enemy: enemies.values() ) enemy.display();
     car.update(inputs);
     hud.display();
-  
-    if (client.available() > 0) {
+ 
+    writeToClient();
+  }
+}
+
+void writeToClient(){
+  if (client.available() > 0) {
       client.write(clientId + "," + car.getPos().x + "," + car.getPos().y + "," + car.getVel().heading());
   
       String res = client.readString();
@@ -93,5 +107,4 @@ void draw() {
         }
       }
     }
-  }
 }

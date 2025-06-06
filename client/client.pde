@@ -38,7 +38,7 @@ void setup() {
 
   map = new Map("../assets/maps/btdMap.jpg", 5, car, enemies);
   titleScreen = new TitleScreen("../assets/maps/ojv.png");
-  hud = new HUD("../assets/fonts/mono.ttf");
+  hud = new HUD("../assets/fonts/mono_b.ttf");
 
   driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
   accelerationSound = new SoundFile(this, "../assets/sounds/acceleration.mp3");
@@ -81,7 +81,7 @@ void draw() {
   if (!start) titleScreen.display();
   
   else {
-    if (raceStart && enemies.size() >= 2)
+    if (raceStart && enemies.size() >= 0)
       hud.setRaceStart(true);
       
     map.update();
@@ -95,16 +95,16 @@ void draw() {
 
 void writeToClient(){
   if (client.available() > 0) {
-      client.write(clientId + "," + car.getPos().x + "," + car.getPos().y + "," + car.getVel().heading());
+    client.write(clientId + "," + car.getPos().x + "," + car.getPos().y + "," + car.getVel().heading());
   
-      String res = client.readString();
+    String res = client.readString();
       
-      if (res != null && res.contains("!@#$")) {
-        String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
+    if (res != null && res.contains("!@#$")) {
+      String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
         
-        if (!point[0].equals(str(clientId))) {
-          enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3]), 0.2));
-        }
+      if (!point[0].equals(str(clientId))) {
+        enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3]), 0.2));
       }
     }
+  }
 }

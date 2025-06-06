@@ -16,12 +16,46 @@ class HUD {
   }
   
   public void times() {
-    fill(255);
+    pushMatrix();
+    
+    fill(184, 185, 215);
+    
     textAlign(CENTER, TOP);
     textFont(font);
     textSize(34);
-    text("Best Lap: 0:30.76", width / 2, 25);
-    text("Lap Time: " + formatTime(), width / 2, 80);
+
+    text("BEST LAP: 0:30.76", width / 2, 25);
+    text("LAP TIME: " + formatTime(), width / 2, 80);
+    
+    popMatrix();
+  }
+  
+  public void place() {
+    pushMatrix();
+    
+    fill(184, 185, 215);
+    
+    textAlign(CENTER, TOP);
+    textFont(font);
+    textSize(34);
+
+    text("17TH", width / 8, 25);
+    
+    popMatrix();
+  }
+  
+  public void laps() {
+    pushMatrix();
+    
+    fill(184, 185, 215);
+    
+    textAlign(CENTER, TOP);
+    textFont(font);
+    textSize(34);
+
+    text("LAP 4 / 5", width / 4, 25);
+    
+    popMatrix();
   }
   
   public void backdrop() {
@@ -48,15 +82,21 @@ class HUD {
       ready();
     }
     else{
+      place();
+      laps();
       times();
     }
   }
   
   public void ready(){
+    pushMatrix();
+    
     fill(255);
     textAlign(CENTER, TOP);
     textFont(font);
     textSize(34);
     text("waiting for players" , width / 2, 25);
+    
+    popMatrix();
   }
 }

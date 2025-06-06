@@ -3,6 +3,8 @@ class Car {
   private static final float DEACCEL = 0.04;
   private static final float FRICTION = 0.978;
 
+  private int nitro, nitroDelay;
+
   private float scale, recipScale;
 
   private PVector pos, vel, tract, offset;
@@ -18,13 +20,16 @@ class Car {
  
     this.tract = new PVector(0, 0);
     this.vel = new PVector(0, 0);
+    
     this.offset = new PVector(0, 0);
-    this.vel.limit(300);
+    
+    this.nitro = 100;
 
     this.sprite = loadImage("../assets/sprites/player.png");
   }
 
   public void update(boolean[] keys) {
+    vel.limit(200);
     listen(keys);
     pos.add(tract);
     pos.add(vel);
@@ -58,6 +63,7 @@ class Car {
     boolean s = keys[2];
     boolean d = keys[3];
     boolean space = keys[4];
+    boolean v = keys[5];
 
     PVector targetTraction = new PVector(0, 0);
 
@@ -68,7 +74,7 @@ class Car {
       if (reversing) {
         forward.rotate(PI);
 
-        if (vel.mag() < 3) {
+        if (vel.mag() < 5) {
           reversing = false;
           flip = false;
         }
@@ -86,7 +92,7 @@ class Car {
 
     // BRAKING/BACKWARDS
     if (s) {
-      if (vel.mag() > 10 && !reversing) {
+      if (vel.mag() > 5 && !reversing) {
         vel.add(vel.copy().mult(-DEACCEL));
       }
 
@@ -142,6 +148,18 @@ class Car {
       tract.mult(0.9);
 
       if (driftSound.isPlaying()) driftSound.stop();
+    }
+    
+    // NITRO
+    if (v) {
+      if (nitro > 0) {
+        vel.mult(1.3);
+        nitro -= 1;
+        nitroDelay = 500;
+      } else {
+        if (nitroDelay > 0) nitro += 1;
+        nitroDelay -= 1;
+      }
     }
 
     tract.lerp(targetTraction, 0.075);

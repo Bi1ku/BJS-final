@@ -30,8 +30,8 @@ void setup() {
   clientId = int(random(100000));
   client = new Client(this, "127.0.0.1", 5204);
 
-  car = new Car(new PVector(0, 0), 0.2);
-  inputs = new boolean[5];
+  car = new Car(new PVector(0, 0), 0.1);
+  inputs = new boolean[6];
 
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
   enemies = new HashMap<Integer, Enemy>();
@@ -48,35 +48,33 @@ void setup() {
 }
 
 void keyPressed() {
-  if(!start){
+  if (!start) {
     start = true;
     hud.setStartTime();
   }
-  else{
-    if (key == 'w') inputs[0] = true;
-    if (key == 'a') inputs[1] = true;
-    if (key == 's') inputs[2] = true;
-    if (key == 'd') inputs[3] = true;
-    if (key == ' ') inputs[4] = true;
-  }
+  
+  if (key == 'w') inputs[0] = true;
+  if (key == 'a') inputs[1] = true;
+  if (key == 's') inputs[2] = true;
+  if (key == 'd') inputs[3] = true;
+  if (key == ' ') inputs[4] = true;
+  if (key == 'v') inputs[5] = true;
 }
 
 void keyReleased() {
-  if(start){
-    if (key == 'w') inputs[0] = false;
-    if (key == 'a') inputs[1] = false;
-    if (key == 's') inputs[2] = false;
-    if (key == 'd') inputs[3] = false;
-    if (key == ' ') inputs[4] = false;
-  }
+  if (key == 'w') inputs[0] = false;
+  if (key == 'a') inputs[1] = false;
+  if (key == 's') inputs[2] = false;
+  if (key == 'd') inputs[3] = false;
+  if (key == ' ') inputs[4] = false;
+  if (key == 'v') inputs[5] = false;
 }
 
 void draw() {
   background(0);
-  if(!start){
-    titleScreen.display();
-  }
-  else{
+  if (!start) titleScreen.display();
+  
+  else {
     map.update();
     for (Enemy enemy: enemies.values()) enemy.display();
     car.update(inputs);

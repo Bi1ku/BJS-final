@@ -3,11 +3,11 @@ class Car {
   private static final float DEACCEL = 0.04;
   private static final float FRICTION = 0.978;
 
-  private int nitro, nitroDelay;
+  private int nitro, nitroDelay, blursDelay;
 
   private float scale, recipScale;
 
-  private PVector pos, vel, tract, offset;
+  private PVector pos, vel, tract, offset, actualPos;
   private PImage sprite;
 
   private boolean flip, stopX, stopY;
@@ -44,10 +44,22 @@ class Car {
     imageMode(CENTER);
     scale(scale);
 
-    if (stopX && stopY) translate(width / 2 * recipScale, height / 2 * recipScale);
-    else if (stopX) translate(width / 2 * recipScale, pos.y + offset.y);
-    else if (stopY) translate(pos.x + offset.x, height / 2 * recipScale);
-    else translate(pos.x + offset.x, pos.y + offset.y);
+    if (stopX && stopY) {
+      actualPos = new PVector(width / 2, height / 2);
+      translate(width / 2 * recipScale, height / 2 * recipScale);
+    }
+    else if (stopX) {
+      actualPos = new PVector(width / 2, pos.y + offset.y);
+      translate(width / 2 * recipScale, pos.y + offset.y);
+    }
+    else if (stopY) {
+      actualPos = new PVector(pos.x + offset.x, height / 2);
+      translate(pos.x + offset.x, height / 2 * recipScale);
+    }
+    else {
+      actualPos = new PVector(pos.x + offset.x, pos.y + offset.y);
+      translate(pos.x + offset.x, pos.y + offset.y);
+    }
 
     rotate(vel.heading());
 
@@ -152,6 +164,12 @@ class Car {
     
     // NITRO
     if (v && nitro > 0) {
+      if (blursDelay < 0) {
+        blursDelay = 10;
+        blurs.add(new Blur(actualPos.copy(), vel.heading()));
+      } else {
+        blursDelay -= 1;
+      }
       vel.mult(1.3);
       nitro -= 2;
       nitroDelay = 50;

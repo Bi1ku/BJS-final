@@ -14,6 +14,8 @@ int clientId;
 Car car;
 boolean[] inputs;
 
+ArrayList<Blur> blurs = new ArrayList<Blur>();
+
 HashMap<Integer, Enemy> enemies;
 PImage enemySprite;
 
@@ -40,8 +42,8 @@ void setup() {
   hud = new HUD("../assets/fonts/mono_b.ttf", car);
 
   // for testing purposes (faster load times if false)
-  start = false; // default: false
-  ready = false; // default: false
+  start = true; // default: false
+  ready = true; // default: false
   music = false; // default: true
 
   if (music) {
@@ -87,11 +89,21 @@ void draw() {
   if (!start) title.display();
   
   else {
-    if (ready && enemies.size() >= 2)
+    if (ready && enemies.size() >= 0)
       hud.setRaceStart(true);
       
     map.update();
+
     for (Enemy enemy: enemies.values() ) enemy.display();
+    for (int i = 0; i < blurs.size(); i++) {
+      if (blurs.get(i).getOpacity() <= 0) {
+        blurs.remove(i);
+        i--;
+        continue;
+      }
+      blurs.get(i).display();
+    }
+
     car.update(inputs);
     hud.display();
  

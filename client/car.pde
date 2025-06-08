@@ -23,7 +23,7 @@ class Car {
     
     this.offset = new PVector(0, 0);
     
-    this.nitro = 100;
+    this.nitro = 200;
 
     this.sprite = loadImage("../assets/sprites/player.png");
   }
@@ -85,9 +85,9 @@ class Car {
       vel.add(forward);
       toggledBack = false;
 
-      if (!accelerationSound.isPlaying()) accelerationSound.play();
+      if (music && !accelerationSound.isPlaying()) accelerationSound.play();
     } else {
-      if (accelerationSound.isPlaying()) accelerationSound.stop();
+      if (music && accelerationSound.isPlaying()) accelerationSound.stop();
     }
 
     // BRAKING/BACKWARDS
@@ -130,39 +130,43 @@ class Car {
     // DRIFTING
     if (space) {
       if (d) {
-       if (!driftSound.isPlaying()) driftSound.play();
+       if (music && !driftSound.isPlaying()) driftSound.play();
 
        targetTraction = vel.copy().mult(0.5).rotate(-PI / 2);
       }
 
       else if (a) {
-        if (!driftSound.isPlaying()) driftSound.play();
+        if (music && !driftSound.isPlaying()) driftSound.play();
 
         targetTraction = vel.copy().mult(0.5).rotate(PI / 2);
       }
 
-      else driftSound.stop();
+      else if (music) driftSound.stop();
 
       vel.mult(0.985);
     } else {
       tract.mult(0.9);
 
-      if (driftSound.isPlaying()) driftSound.stop();
+      if (music && driftSound.isPlaying()) driftSound.stop();
     }
     
     // NITRO
-    if (v) {
-      if (nitro > 0) {
-        vel.mult(1.3);
-        nitro -= 1;
-        nitroDelay = 500;
-      } else {
-        if (nitroDelay > 0) nitro += 1;
-        nitroDelay -= 1;
-      }
+    if (v && nitro > 0) {
+      vel.mult(1.3);
+      nitro -= 2;
+      nitroDelay = 50;
     }
 
+    if (!v) {
+      if (nitroDelay < 0 && nitro <= 200) nitro += 2;
+      nitroDelay -= 1;
+   }
+
     tract.lerp(targetTraction, 0.075);
+  }
+
+  public int getNitro() {
+    return nitro;
   }
 
   public float getScale() {

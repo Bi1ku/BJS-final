@@ -1,11 +1,11 @@
-class TitleScreen{
+class Title {
   private PImage picture;
   
-  public TitleScreen(String path){
+  public Title(String path){
     this.picture = loadImage(path);
   }
   
-  public void display(){ //only activates is start is false
+  public void display() {
     imageMode(CORNER);
     image(picture, 0, 0);
   }

@@ -6,8 +6,7 @@ import java.util.Arrays;
 boolean reversing;
 boolean toggledBack;
 
-boolean start;
-boolean raceStart;
+boolean start, ready, music;
 
 Client client;
 int clientId;
@@ -19,13 +18,13 @@ HashMap<Integer, Enemy> enemies;
 PImage enemySprite;
 
 Map map;
-TitleScreen titleScreen;
+Title title;
 HUD hud;
 
 SoundFile driftSound, accelerationSound, gameSound;
 
 void setup() {
-  size(1600, 1000, P2D);
+  size(1800, 1000, P2D);
 
   clientId = int(random(100000));
   client = new Client(this, "127.0.0.1", 5204);
@@ -37,14 +36,21 @@ void setup() {
   enemies = new HashMap<Integer, Enemy>();
 
   map = new Map("../assets/maps/btdMap.jpg", 5, car, enemies);
-  titleScreen = new TitleScreen("../assets/maps/ojv.png");
-  hud = new HUD("../assets/fonts/mono_b.ttf");
+  title = new Title("../assets/ui/title.png");
+  hud = new HUD("../assets/fonts/mono_b.ttf", car);
 
-  driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
-  accelerationSound = new SoundFile(this, "../assets/sounds/acceleration.mp3");
-  gameSound = new SoundFile(this, "../assets/sounds/game.mp3");
+  // for testing purposes (faster load times if false)
+  start = false; // default: false
+  ready = true; // default: false
+  music = false; // default: true
 
-  gameSound.loop();
+  if (music) {
+    driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
+    accelerationSound = new SoundFile(this, "../assets/sounds/acceleration.mp3");
+    gameSound = new SoundFile(this, "../assets/sounds/game.mp3");
+
+    gameSound.loop();
+  }
 }
 
 void keyPressed() {
@@ -52,11 +58,11 @@ void keyPressed() {
 
   else {
     if (key == 'r') {
-      raceStart = true;
+      ready = true;
       hud.setStartTime();
     }
     
-    if (raceStart) {
+    if (ready) {
       if (key == 'w') inputs[0] = true;
       if (key == 'a') inputs[1] = true;
       if (key == 's') inputs[2] = true;
@@ -78,10 +84,10 @@ void keyReleased() {
 
 void draw() {
   background(0);
-  if (!start) titleScreen.display();
+  if (!start) title.display();
   
   else {
-    if (raceStart && enemies.size() >= 0)
+    if (ready && enemies.size() >= 0)
       hud.setRaceStart(true);
       
     map.update();

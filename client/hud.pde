@@ -2,16 +2,21 @@ class HUD {
   private PFont font;
   private int millisLapsed, startTime;
   private boolean raceStart;
+  private Car car;
+  private PImage nos;
   
-  public HUD(String path) {
+  public HUD(String path, Car car) {
     this.font = createFont(path, 128);
+    this.car = car;
+    this.nos = loadImage("../assets/ui/nos.png");
   }
   
   public String formatTime() {
     millisLapsed = millis() - startTime; // millis() gives time since start, secs() or mins() give current time
     int secondsLapsed = (millisLapsed / 1000) % 60;
     int minsLapsed = secondsLapsed / 60;
-    String res = nf(minsLapsed,2) + ":" + nf(secondsLapsed,2);
+    int milliSecs = millisLapsed % 100;
+    String res = nf(minsLapsed, 1) + ":" + nf(secondsLapsed, 2) + "." + nf(milliSecs, 2);
     return res;
   }
   
@@ -33,13 +38,13 @@ class HUD {
   public void place() {
     pushMatrix();
     
-    fill(184, 185, 215);
+    fill(255, 191, 0);
     
     textAlign(CENTER, TOP);
     textFont(font);
-    textSize(34);
+    textSize(64);
 
-    text("17TH", width / 8, 25);
+    text("17TH", width / 10, 40);
     
     popMatrix();
   }
@@ -47,28 +52,28 @@ class HUD {
   public void laps() {
     pushMatrix();
     
-    fill(184, 185, 215);
+    fill(255, 191, 0);
     
     textAlign(CENTER, TOP);
     textFont(font);
-    textSize(34);
+    textSize(36);
 
-    text("LAP 4 / 5", width / 4, 25);
+    text("LAP 4/5", width / 4, 47);
     
     popMatrix();
   }
   
   public void backdrop() {
     pushMatrix();
-    
+
     noStroke();
-    fill(0, 100);
-    rect(0, 0, width, height / 6);
-    
+    fill(0, 80);
+    rect(0, 0, width, height / 8);
+
     popMatrix();
   }
   
-  public void setStartTime(){
+  public void setStartTime() {
     startTime = millis();
   }
   
@@ -78,10 +83,10 @@ class HUD {
   
   public void display() {
     backdrop();
-    if(!raceStart){ //if race hasnt started
-      ready();
-    }
-    else{
+    nitro();
+
+    if (!raceStart) ready();
+    else {
       place();
       laps();
       times();
@@ -97,6 +102,31 @@ class HUD {
     textSize(34);
     text("waiting for players" , width / 2, 25);
     
+    popMatrix();
+  }
+
+  public void nitro() {
+    pushMatrix();
+
+    int nitro = car.getNitro();
+    System.out.println(1 / (float) nitro);
+    if (nitro != 0) fill(255 * (1 / ((float) nitro / 100)), 255 * (float) nitro / 100, 0);
+    else fill(0);
+
+    stroke(0);
+    strokeWeight(2);
+    translate(width / 1.1, 115);
+    rotate(PI);
+    rect(0, 0, 30, nitro / 2);
+
+    popMatrix();
+
+    pushMatrix();
+
+    scale(0.15);
+    imageMode(CENTER);
+    image(nos, width / 1.15 * (1 / 0.15), height / 16 * (1 / 0.15));
+
     popMatrix();
   }
 }

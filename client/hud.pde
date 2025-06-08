@@ -83,25 +83,30 @@ class HUD {
   
   public void display() {
     backdrop();
-    nitro();
 
     if (!raceStart) ready();
     else {
+      nitro();
       place();
       laps();
       times();
     }
   }
-  
+
   public void ready(){
     pushMatrix();
-    
-    fill(255);
+
+    fill(220);
     textAlign(CENTER, TOP);
     textFont(font);
     textSize(34);
-    text("waiting for players" , width / 2, 25);
-    
+    text("WAITING FOR PLAYERS...", width / 2, 25);
+    text(enemies.size() + (ready ? 1 : 0) + "/3", width / 2, 75);
+
+    textSize(20);
+    fill(255);
+    text("PRESS 'R' TO READY UP", width / 10, 52.5);
+
     popMatrix();
   }
 

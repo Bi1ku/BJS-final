@@ -41,7 +41,7 @@ void setup() {
 
   // for testing purposes (faster load times if false)
   start = false; // default: false
-  ready = true; // default: false
+  ready = false; // default: false
   music = false; // default: true
 
   if (music) {
@@ -87,7 +87,7 @@ void draw() {
   if (!start) title.display();
   
   else {
-    if (ready && enemies.size() >= 0)
+    if (ready && enemies.size() >= 2)
       hud.setRaceStart(true);
       
     map.update();

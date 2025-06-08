@@ -114,7 +114,6 @@ class HUD {
     pushMatrix();
 
     int nitro = car.getNitro();
-    System.out.println(1 / (float) nitro);
     if (nitro != 0) fill(255 * (1 / ((float) nitro / 100)), 255 * (float) nitro / 100, 0);
     else fill(0);
 

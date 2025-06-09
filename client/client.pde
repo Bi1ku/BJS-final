@@ -3,6 +3,8 @@ import processing.net.*;
 import java.util.Map;
 import java.util.Arrays;
 
+int playerSize;
+
 boolean reversing;
 boolean toggledBack;
 
@@ -40,8 +42,8 @@ void setup() {
   hud = new HUD("../assets/fonts/mono_b.ttf", car);
 
   // for testing purposes (faster load times if false)
-  start = false; // default: false
-  ready = false; // default: false
+  start = true; // default: false
+  ready = true; // default: false
   music = false; // default: true
 
   if (music) {
@@ -62,7 +64,7 @@ void keyPressed() {
       hud.setStartTime();
     }
     
-    if (ready) {
+    if (ready && enemies.size() >= playerSize) {
       if (key == 'w') inputs[0] = true;
       if (key == 'a') inputs[1] = true;
       if (key == 's') inputs[2] = true;
@@ -87,7 +89,7 @@ void draw() {
   if (!start) title.display();
   
   else {
-    if (ready && enemies.size() >= 2)
+    if (ready && enemies.size() >= playerSize)
       hud.setRaceStart(true);
       
     map.update();

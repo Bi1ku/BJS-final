@@ -4,11 +4,14 @@ class Car {
   private static final float FRICTION = 0.978;
 
   private int nitro, nitroDelay;
+  private boolean isNitro, isDrifting;
 
   private float scale, recipScale;
 
   private PVector pos, vel, tract, offset;
-  private PImage sprite;
+
+  private PImage sprite, driftSprite;
+  private PImage[] nitroSprites;
 
   private boolean flip, stopX, stopY;
 
@@ -25,7 +28,13 @@ class Car {
     
     this.nitro = 200;
 
-    this.sprite = loadImage("../assets/sprites/player.png");
+    this.sprite = loadImage("../assets/sprites/player/player.png");
+
+    this.nitroSprites = new PImage[2];
+    this.nitroSprites[0] = loadImage("../assets/sprites/player/nitro/nitro_1.png");
+    this.nitroSprites[1] = loadImage("../assets/sprites/player/nitro/nitro_2.png");
+
+    this.driftSprite = loadImage("../assets/sprites/player/drift.png");
   }
 
   public void update(boolean[] keys) {
@@ -52,7 +61,13 @@ class Car {
     rotate(vel.heading());
 
     if (flip) rotate(PI);
-    image(sprite, 0, 0);
+    if (!isNitro && !isDrifting) image(sprite, 0, 0);
+    else if (isNitro && !isDrifting) {
+      int index = (int) ((millis() / 100) % nitroSprites.length);
+      image(nitroSprites[index], 0, 0);
+    } else {
+      image(driftSprite, 0, 0);
+    }
 
     popMatrix();
   }
@@ -129,6 +144,8 @@ class Car {
                           
     // DRIFTING
     if (space) {
+      isDrifting = true;
+
       if (d) {
        if (music && !driftSound.isPlaying()) driftSound.play();
 
@@ -145,6 +162,8 @@ class Car {
 
       vel.mult(0.985);
     } else {
+      isDrifting = false;
+
       tract.mult(0.9);
 
       if (music && driftSound.isPlaying()) driftSound.stop();
@@ -152,12 +171,14 @@ class Car {
     
     // NITRO
     if (v && nitro > 0) {
+      isNitro = true;
       vel.mult(1.3);
       nitro -= 2;
       nitroDelay = 50;
     }
 
     if (!v) {
+      isNitro = false;
       if (nitroDelay < 0 && nitro <= 200) nitro += 2;
       nitroDelay -= 1;
    }

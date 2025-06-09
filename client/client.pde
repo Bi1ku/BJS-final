@@ -23,7 +23,7 @@ Map map;
 Title title;
 HUD hud;
 
-SoundFile driftSound, accelerationSound, gameSound;
+SoundFile driftSound, accelerationSound, gameSound, nitroSound;
 
 void setup() {
   size(1800, 1000, P2D);
@@ -42,14 +42,15 @@ void setup() {
   hud = new HUD("../assets/fonts/mono_b.ttf", car);
 
   // for testing purposes (faster load times if false)
-  start = true; // default: false
-  ready = true; // default: false
-  music = false; // default: true
+  start = false; // default: false
+  ready = false; // default: false
+  music = true; // default: true
 
   if (music) {
     driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
     accelerationSound = new SoundFile(this, "../assets/sounds/acceleration.mp3");
     gameSound = new SoundFile(this, "../assets/sounds/game.mp3");
+    nitroSound = new SoundFile(this, "../assets/sounds/nitro.mp3");
 
     gameSound.loop();
   }

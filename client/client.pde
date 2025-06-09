@@ -7,9 +7,11 @@ import java.util.Arrays;
 final float ACCEL = 4.0;
 final float DEACCEL = 0.04;
 final float FRICTION = 0.02;
+final float collisionDeaccel = 0.50;
 
 boolean reversing;
 boolean toggledBack;
+boolean colliding;
 
 Client client;
 Car car;
@@ -18,13 +20,15 @@ HashMap<Integer, Response> others;
 boolean w, s, a, d, space, wReady, sReady, aReady, dReady;
 PImage enemySprite;
 Map map = new Map();
+Map image = new Map();
 SoundFile driftSound, accelerationSound, gameSound;
 
 float scale = 0.05;
 //127.0.0.1
 void setup() {
   size(1920, 1080);
-  map.m = loadImage("../assets/hitbox2.jpg");
+  image.m = loadImage("../assets/racetrack.jpg");
+  map.m = loadImage("../assets/hitbox.jpg");
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
   others = new HashMap<Integer, Response>();
   id = int(random(100000));
@@ -44,32 +48,37 @@ void setup() {
 }
 
 void keyPressed() {
-  if (key == 'w' && wReady) w = true;
-  if (key == 's' && sReady) s = true;
-  if (key == 'a' && aReady) a = true;
-  if (key == 'd' && dReady) d = true;
-  if (key == ' ') space = true;
+  if (key == 'w' && !colliding) w = true;
+  if (key == 's' && !colliding) s = true;
+  if (key == 'a' && !colliding) a = true;
+  if (key == 'd' && !colliding) d = true;
+  if (key == ' ' && !colliding) space = true;
 }
 
 void keyReleased() {
-  if (key == 'w' && !wReady) w = false;
-  if (key == 's' && !sReady) s = false;
-  if (key == 'a' && !aReady) a = false;
-  if (key == 'd' && !dReady) d = false;
+  if (key == 'w') w = false;
+  if (key == 's') s = false;
+  if (key == 'a') a = false;
+  if (key == 'd') d = false;
   if (key == ' ') space = true;
 }
 
 void draw() {
   background(0);
-  //println("COORD " + mouseX + " " + mouseY);
   map.updateMap();
   PVector vel = car.getVel();
   PVector targetTraction = new PVector(0, 0);
-  //if(!map.isBorder(car.pos.x, car.pos.y)){
-  //    reversing = true;
-  //    car.borderCollision();
-  //    reversing = false;
-  //}
+  if(!map.isBorder(car.pos.x, car.pos.y)){
+    colliding = true;
+    PVector copy = car.vel.copy();
+    if (copy.mag() > 0.5) { 
+        car.borderCollision(copy);
+    } else {
+        car.move(new PVector(random(-5, 5), random(-5, 5)));
+    }
+
+    colliding = false;
+  }
   if (w) {
     PVector forward = PVector.fromAngle(vel.heading());
     if (reversing) {
@@ -83,13 +92,6 @@ void draw() {
     forward.mult(ACCEL);
     car.move(forward);
     toggledBack = false;
-    if(!map.isBorder(car.pos.x, car.pos.y)){
-
-      wReady = false;
-      vel = new PVector(0,0); 
-      s = true;
-      w = false;
-    }
     if (!accelerationSound.isPlaying()) accelerationSound.play();
   } else {
     if (accelerationSound.isPlaying()) accelerationSound.stop();
@@ -110,37 +112,16 @@ void draw() {
       else backward.mult(DEACCEL * 40);
       car.move(backward);
       car.getTraction().add(vel.copy().normalize().mult(-0.1));
-      if(!map.isBorder(car.pos.x, car.pos.y)){
-
-        sReady = false;
-        vel = new PVector(0,0); 
-        w = true;
-        s = false;
-      }
     }
   }
   if (a) {
     if (space) vel.rotate(constrain(-DEACCEL * (vel.mag() / 2), -DEACCEL, 0));
     else vel.rotate(constrain(-DEACCEL * (vel.mag() / 60), -DEACCEL, 0));
-    if(!map.isBorder(car.pos.x, car.pos.y)){
-
-      aReady = false;
-      vel = new PVector(0,0); 
-      d = true;
-      a = false;
-    }
   }
   if (d) {
     if (space)
       vel.rotate(constrain(DEACCEL * (vel.mag() / 2), 0, DEACCEL));
     else vel.rotate(constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
-    if(!map.isBorder(car.pos.x, car.pos.y)){
-
-      dReady = false;
-      vel = new PVector(0,0); 
-      a = true;
-      d = false;
-    }
   }
   wReady = true;
   sReady = true;
@@ -163,48 +144,6 @@ void draw() {
   }
   
   car.getTraction().lerp(targetTraction, 0.1);
-  //if (w) {
-  //  if(map.isGrey(car.pos.copy().add(new PVector(0, -1)).x, car.pos.copy().add(new PVector(0, -1)).y)){
-  //    car.move(new PVector(0, -1));
-  //    map.updateMap(car.pos.x, car.pos.y);
-  //  }
-  //  else{
-  //    car.vel = new PVector(0,0);
-  //     car.move(new PVector(0, 2));
-  //  }
-  //}
-  //if (s) {
-  //  if(map.isGrey(car.pos.copy().add(new PVector(0, 1)).x, car.pos.copy().add(new PVector(0, 1)).y)){
-  //    car.move(new PVector(0, 1));
-  //    map.updateMap(car.pos.x, car.pos.y);
-  //  }
-  //  else{
-  //    car.vel = new PVector(0,0);
-  //    car.move(new PVector(0, -2));
-  //  }
-  //}
-  //if (a) {
-  //  if(map.isGrey(car.pos.copy().add(new PVector(-1, 0)).x, car.pos.copy().add(new PVector(-1, 0)).y)){
-  //    car.move(new PVector(-1, 0));
-  //    map.updateMap(car.pos.x, car.pos.y);
-  //  }
-  //  else{
-  //    car.vel = new PVector(0,0);
-  //    car.move(new PVector(2, 0));
-  //  }
-  //}
-  //if (d) {
-  //  if(map.isGrey(car.pos.copy().add(new PVector(1, 0)).x, car.pos.copy().add(new PVector(1, 0)).y)){
-  //    car.move(new PVector(1, 0));
-  //    map.updateMap(car.pos.x, car.pos.y);
-  //  }
-  //  else{
-  //    car.vel = new PVector(0,0);
-  //    car.move(new PVector(-2, 0));
-  //  }
-  //}
-
-
   car.move(vel.copy().mult(-FRICTION)); // friction
 
   car.update();

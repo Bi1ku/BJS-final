@@ -32,7 +32,7 @@ class Map{
   
   boolean isBorder(float x, float y){
     color c = m.get(int(x*scale), int(y * scale));
-    println(red(c) + " " + blue(c) + " " + green(c));
+    //println(red(c) + " " + blue(c) + " " + green(c));
     return (!(red(c) == 255 && blue(c) == 4 && green(c) == 0));
   }
   

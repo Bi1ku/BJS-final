@@ -24,6 +24,7 @@ class Car {
   public void update() {
     prevPos = pos;
     pos.add(traction);
+    flip = false;
     pos.add(vel);
     display();
   }
@@ -32,35 +33,15 @@ class Car {
     
   //}
   
-  public void borderCollision(){
-    if(!start){
-      PVector prevVel = vel.copy();
-      vel = new PVector(0,0);
-      pos.add(prevVel.mult(-6));
-      display();
-      //vel.mult(-0.5);
-      //pos.add(vel.copy().mult(3));
-      //vel = new PVector(0,0);
-      //display();
-      
-      //car.vel = new PVector(0,0);
-      //PVector difference = pos.copy().sub(prevPos);
-      //int recoil = 40;
-      //if(difference.x < 0){
-      //  car.pos.x = prevPos.x + ((difference.x + recoil));
-      //}
-      //else{
-      //  car.pos.x = prevPos.x - (difference.x + recoil);
-      //}
-      //if(difference.y < 0){
-      //  car.pos.y = prevPos.y + (difference.y + recoil);
-      //}
-      //else{
-      //  car.pos.y = prevPos.y - (difference.y + recoil);
-      //}
-      delay(200);
-      //display(); 
-    }
+  public void borderCollision(PVector copy){
+    PVector opposite =  copy.copy().rotate(PI).mult(2);
+    pos.add(opposite);
+    vel.mult(-0.5);
+    //PVector opposite = PVector.fromAngle(copy.copy().rotate(PI).heading());
+    //opposite.mult(copy.mag() * 0.01);
+    //println(opposite.x + " " + opposite.y);
+    //move(opposite);
+    //update();
   }
 
   public void display() {

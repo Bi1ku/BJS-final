@@ -1,44 +1,5 @@
- //if(!map.isBorder(car.pos.x, car.pos.y)){
- //   colliding = true;
- //   PVector copy = car.vel.copy();
- //   if (copy.mag() > 0.5) { 
- //       car.borderCollision(copy);
- //   } else {
- //       car.move(new PVector(random(-5, 5), random(-5, 5)));
- //   }
-
- //   colliding = false;
- // }
-
 class Car {
-<<<<<<< HEAD
-  private PVector pos;
-  private PVector vel;
-  private PImage sprite;
-  private boolean flip;
-  private PVector traction;
-  private PVector prevPos = new PVector();  
-  float scale = 0.05;
-  boolean start = false;
-  public Car(PVector pos) {
-    this.pos = pos;
-    this.traction = new PVector(0, 0);
-    this.vel = new PVector(0, 0);
-    this.sprite = loadImage("../assets/sprites/player.png");
-    this.flip = false;
-  }
 
-
-  public void move(PVector dir) {
-    vel.limit(200);
-    vel.add(dir);
-  }
-
-  public void update() {
-    prevPos = pos;
-    pos.add(traction);
-    flip = false;
-=======
   private static final float ACCEL = 6.0;
   private static final float DEACCEL = 0.04;
   private static final float FRICTION = 0.978;
@@ -81,53 +42,18 @@ class Car {
     vel.limit(200);
     listen(keys);
     pos.add(tract);
->>>>>>> 2d27883b163a94c0c6e84db2b7d969d79d24b009
     pos.add(vel);
 
     vel.mult(FRICTION);
     display();
   }
   
-  //String oppositeKey(String key){
-    
-  //}
-  
   public void borderCollision(PVector copy){
     PVector opposite =  copy.copy().rotate(PI).mult(2);
     pos.add(opposite);
     vel.mult(-0.5);
-    //PVector opposite = PVector.fromAngle(copy.copy().rotate(PI).heading());
-    //opposite.mult(copy.mag() * 0.01);
-    //println(opposite.x + " " + opposite.y);
-    //move(opposite);
-    //update();
   }
 
-<<<<<<< HEAD
-  public void display() {
-    if (!flip) {
-      pushMatrix();
-      imageMode(CENTER);
-      scale(scale);
-      translate(pos.x, pos.y);
-      rotate(vel.heading());
-      image(sprite, 0, 0);
-      popMatrix();
-    } else {
-      pushMatrix();
-      imageMode(CENTER);
-      scale(scale);
-      translate(pos.x, pos.y);
-      rotate(vel.heading());
-      rotate(PI);
-      image(sprite, 0, 0);
-      popMatrix();
-    }
-  }
-
-  public void setFlip(boolean val) {
-    this.flip = val;
-=======
   private void display() {
     pushMatrix();
 
@@ -151,7 +77,6 @@ class Car {
     }
 
     popMatrix();
->>>>>>> 2d27883b163a94c0c6e84db2b7d969d79d24b009
   }
 
   private void listen(boolean[] keys) {
@@ -304,11 +229,4 @@ class Car {
     this.stopY = stopY;
   }
   
-  public PVector getTraction() {
-    return traction;
-  }
-  
-  public void setTraction(PVector traction) {
-    this.traction = traction;
-  }
 }

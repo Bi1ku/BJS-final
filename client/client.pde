@@ -22,9 +22,6 @@ boolean[] inputs;
 HashMap<Integer, Enemy> enemies;
 
 PImage enemySprite;
-Map map = new Map();
-Map image = new Map();
-SoundFile driftSound, accelerationSound, gameSound;
 
 float scale = 0.05;
 
@@ -95,6 +92,17 @@ void keyReleased() {
 
 void draw() {
   background(0);
+  if(!map.isBorder(car.pos.x, car.pos.y)){
+    colliding = true;
+    PVector copy = car.vel.copy();
+    if (copy.mag() > 0.5) { 
+      car.borderCollision(copy);
+    } else {
+        car.pos.add(new PVector(random(-5, 5), random(-5, 5)));
+    }
+
+    colliding = false;
+  }
 
   if (!start) title.display();
   

@@ -13,8 +13,8 @@ class HUD {
   public String formatTime() {
     millisLapsed = millis() - startTime; // millis() gives time since start, secs() or mins() give current time
     int secondsLapsed = (millisLapsed / 1000) % 60;
-    int minsLapsed = secondsLapsed / 60;
     int milliSecs = millisLapsed % 100;
+    int minsLapsed = (millisLapsed / 1000) / 60;
     String res = nf(minsLapsed, 1) + ":" + nf(secondsLapsed, 2) + "." + nf(milliSecs, 2);
     return res;
   }

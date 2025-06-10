@@ -9,6 +9,7 @@ class Car {
   private float scale, recipScale;
 
   private PVector pos, vel, tract, offset;
+  private float heading = 0;
 
   private PImage sprite, driftSprite;
   private PImage[] nitroSprites;
@@ -67,13 +68,12 @@ class Car {
       translate(pos.x + offset.x, pos.y + offset.y);
     }
 
-    rotate(vel.heading());
+    rotate(heading);
 
-    if (flip) rotate(PI);
     if (!isNitro && !isDrifting) image(sprite, 0, 0);
-    else if (isDrifting && !isNitro) {
+    else if (!isNitro && isDrifting) {
       image(driftSprite, 0, 0);
-   } else if (isNitro) {
+    } else if (isNitro) {
       int index = (int) ((millis() / 100) % nitroSprites.length);
       image(nitroSprites[index], 0, 0);
     }
@@ -93,22 +93,17 @@ class Car {
 
     // ACCELERATION/FORWARD
     if (w) {
-      PVector forward = PVector.fromAngle(vel.heading());
-
-      if (reversing) {
-        forward.rotate(PI);
-
-        if (vel.mag() < 5) {
-          reversing = false;
-          flip = false;
-        }
+      if (reversing && vel.mag() < 5) {
+        reversing = false;
+        flip = false;
       }
-
-      tract.add(vel.copy().normalize().mult(0.2));
-      forward.mult(ACCEL);
-      vel.add(forward);
-      toggledBack = false;
-
+    
+      if (!reversing) {
+        PVector forward = PVector.fromAngle(heading).mult(ACCEL);
+        vel.add(forward);
+        tract.add(forward.copy().normalize().mult(0.2));
+        toggledBack = false;
+      }
       if (music && !accelerationSound.isPlaying()) accelerationSound.play();
     } else {
       if (music && accelerationSound.isPlaying()) accelerationSound.stop();
@@ -116,39 +111,40 @@ class Car {
 
     // BRAKING/BACKWARDS
     if (s) {
-      if (vel.mag() > 5 && !reversing) {
+      if (!reversing && vel.mag() > 5) {
         vel.add(vel.copy().mult(-DEACCEL));
-      }
-
-      else {
-        reversing = true;
-        vel.limit(50);
-
-        PVector backward = PVector.fromAngle(vel.heading());
-
-        if (!toggledBack) {
-          toggledBack = true;
-          vel.rotate(PI);
-          flip = true;
+      } else {
+        if (!reversing) {
+          reversing = true;
+          toggledBack = false;
         }
-
-        else backward.mult(DEACCEL * 40);
-
+    
+        vel.limit(50);
+    
+        if (!toggledBack) {
+          flip = true;
+          toggledBack = true;
+        }
+    
+        PVector backward = PVector.fromAngle(heading + PI).mult(DEACCEL * 40);
         vel.add(backward);
-        tract.add(vel.copy().normalize().mult(-0.1));
+        tract.add(backward.copy().normalize().mult(0.1));
       }
     }
 
     // TURNING
     if (a) {
-      if (space) vel.rotate(constrain(-DEACCEL * (vel.mag() / 2), -DEACCEL, 0));
-      else vel.rotate(constrain(-DEACCEL * (vel.mag() / 60), -DEACCEL, 0));
+      float turnAmount;
+      if (space) turnAmount = constrain(-DEACCEL * (vel.mag() / 2), -DEACCEL, 0);
+      else turnAmount = constrain(-DEACCEL * (vel.mag() / 60), -DEACCEL, 0);
+      heading += turnAmount;
     }
 
     if (d) {
-      if (space)
-        vel.rotate(constrain(DEACCEL * (vel.mag() / 2), 0, DEACCEL));
-      else vel.rotate(constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
+      float turnAmount;
+      if (space) turnAmount = constrain(DEACCEL * (vel.mag() / 2), 0, DEACCEL);
+      else turnAmount = (constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
+      heading += turnAmount;
     }
                           
     // DRIFTING
@@ -180,11 +176,14 @@ class Car {
     
     // NITRO
     if (v && nitro > 0) {
+      if (music && !nitroSound.isPlaying()) nitroSound.play();
       isNitro = true;
       vel.mult(1.3);
       nitro -= 2;
       nitroDelay = 50;
     }
+    
+    if (nitro <= 0) isNitro = false;
 
     if (nitro <= 0) isNitro = false;
 
@@ -192,6 +191,7 @@ class Car {
       isNitro = false;
       if (nitroDelay < 0 && nitro <= 200) nitro += 2;
       nitroDelay -= 1;
+      if (music && nitroSound.isPlaying()) nitroSound.stop();
    }
 
     tract.lerp(targetTraction, 0.075);

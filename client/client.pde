@@ -43,7 +43,7 @@ void setup() {
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
   enemies = new HashMap<Integer, Enemy>();
 
-  map = new Map("../assets/hitbox.jpg", 5, car, enemies);
+  map = new Map("../assets/hitbox.jpg", 5, car, enemies, -200, -250);
   title = new Title("../assets/ui/title.png");
   hud = new HUD("../assets/fonts/mono_b.ttf", car);
 

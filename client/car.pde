@@ -1,5 +1,4 @@
 class Car {
-
   private static final float ACCEL = 6.0;
   private static final float DEACCEL = 0.04;
   private static final float FRICTION = 0.978;

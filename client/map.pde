@@ -3,6 +3,7 @@ class Map {
   private Car car;
   private int scale;
 
+  private int originalX, originalY;
   private float transX, transY;
 
   private boolean changedXR, changedXL, changedYU, changedYD;
@@ -10,11 +11,14 @@ class Map {
   
   private HashMap<Integer, Enemy> enemies;
 
-  public Map(String path, int scale, Car car, HashMap<Integer, Enemy> enemies) {
+  public Map(String path, int scale, Car car, HashMap<Integer, Enemy> enemies, int originalX, int originalY) {
     this.map = loadImage(path);
     this.scale = scale;
     this.car = car;
-    
+
+    this.originalX = originalX;
+    this.originalY = originalY;
+
     this.enemies = enemies;
   }
 
@@ -26,7 +30,7 @@ class Map {
     PVector offset = car.getOffset();
 
     // Camera X Movement
-    if (map.width * scale - carPos.x < width / 2) {
+    if (map.width * scale - carPos.x + originalX * scale < width / 2) {
       if (!changedXR) {
         boundXR = carPos.x;
         changedXR = true;
@@ -41,7 +45,7 @@ class Map {
       car.setStopX(false);
     }
 
-    else if (carPos.x > width / 2) {
+    else if (carPos.x - originalX * scale > width / 2) {
       transX = -carPos.x + width / 2;
       
       translate(transX, 0);
@@ -54,14 +58,16 @@ class Map {
         changedXL = true;
       }
 
-      offset.x = (-boundXL) * recipScale;
+      offset.x = (-boundXL - originalX * 4.5) * recipScale;
       car.setOffset(offset);
+
+      translate(transX, 0);
 
       car.setStopX(false);
     }
 
     // Camera Y Movement
-    if (map.height * scale - carPos.y < height / 2) {
+    if (map.height * scale - carPos.y + originalY * scale < height / 2) {
       if (!changedYU) {
         boundYU = carPos.y;
         changedYU = true;
@@ -76,7 +82,7 @@ class Map {
       car.setStopY(false);
     }
 
-    else if (carPos.y > height / 2) {
+    else if (carPos.y - originalY * scale > height / 2) {
       transY = -carPos.y + height / 2;
       
       translate(0, transY);
@@ -89,20 +95,23 @@ class Map {
         changedYD = true;
       }
 
-      offset.y = (-boundYD) * recipScale;
+      offset.y = (-boundYD - originalY * 2) * recipScale;
       car.setOffset(offset);
+
+      translate(0, transY);
 
       car.setStopY(false);
     }
   }
 
   public void update() {
+    println(car.getPos().x + " " + car.getPos().y);
     pushMatrix();
     translateScreen();
 
     scale(scale);
     imageMode(CORNER);
-    image(map, 0, 0);
+    image(map, originalX, originalY);
 
     popMatrix();
   }

@@ -8,7 +8,7 @@ int playerSize;
 boolean reversing;
 boolean toggledBack;
 
-boolean start, ready, music;
+boolean start, music;
 
 Client client;
 int clientId;
@@ -29,7 +29,7 @@ void setup() {
   size(1800, 1000, P2D);
 
   clientId = int(random(100000));
-  client = new Client(this, "127.0.0.1", 5204);
+  client = new Client(this, "192.168.1.197", 5204);
 
   car = new Car(new PVector(0, 0), 0.1);
   inputs = new boolean[6];
@@ -42,9 +42,9 @@ void setup() {
   hud = new HUD("../assets/fonts/mono_b.ttf", car);
 
   // for testing purposes (faster load times if false)
-  start = false; // default: false
-  ready = false; // default: false
-  music = true; // default: true
+  start = true; // default: false
+  music = false; // default: true
+  playerSize = 1; // default: 2
 
   if (music) {
     driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
@@ -60,12 +60,9 @@ void keyPressed() {
   if (!start) start = true;
 
   else {
-    if (key == 'r') {
-      ready = true;
+    if (enemies.size() >= playerSize) {
       hud.setStartTime();
-    }
-    
-    if (ready && enemies.size() >= playerSize) {
+
       if (key == 'w') inputs[0] = true;
       if (key == 'a') inputs[1] = true;
       if (key == 's') inputs[2] = true;
@@ -87,18 +84,15 @@ void keyReleased() {
 
 void draw() {
   background(0);
+  writeToClient();
+
   if (!start) title.display();
   
   else {
-    if (ready && enemies.size() >= playerSize)
-      hud.setRaceStart(true);
-      
     map.update();
-    for (Enemy enemy: enemies.values() ) enemy.display();
+    for (Enemy enemy: enemies.values()) enemy.display();
     car.update(inputs);
     hud.display();
- 
-    writeToClient();
   }
 }
 

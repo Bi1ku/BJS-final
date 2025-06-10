@@ -61,7 +61,6 @@ class Car {
 
     rotate(heading);
 
-    if (flip) rotate(PI);
     if (!isNitro && !isDrifting) image(sprite, 0, 0);
     else if (isNitro && !isDrifting) {
       int index = (int) ((millis() / 100) % nitroSprites.length);

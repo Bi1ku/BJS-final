@@ -2,45 +2,25 @@ import processing.net.*;
 
 Server server;
 int ticks;
-ArrayList<String> connections;
 
 void setup() {
-  size(300, 125);
+  size(200, 200);
 
   server = new Server(this, 5204);
-  connections = new ArrayList<String>();
 }
 
 void draw() {
-  background(0);
   ticks++;
+  text("TICKS: " + ticks, 10, 40);
 
-  fill(0, 255, 0);
-  text("Ticks: " + ticks, 10, 20);
-  text("IP: " + Server.ip(), 10, 40);
-  text("Port: 5204", 10, 60);
-  text("Connections: " + connections.size(), 10, 80);
-  text("*Check the console for incoming messages*", 10, 100);
+  Client client = server.available();
 
-  try {
-    Client client = server.available();
-
-    if (client != null) {
-      String val = client.readString();
-      if (val != null) {
-        println("Received: " + val);
-        server.write("!@#$" + val + "!@#$");
-      }
+  if (client != null) {
+    String val = client.readString();
+    if (val != null) {
+      println("Received: " + val);
+      server.write("!@#$" + val + "!@#$");
     }
-  } catch (Exception e) {
-    println("Error: " + e.getMessage());
   }
-}
-
-void serverEvent(Server server, Client client) {
-  connections.add(client.ip());
-}
-
-void disconnectEvent(Client client) {
-  connections.remove(client.ip());
+  server.write(ticks);
 }

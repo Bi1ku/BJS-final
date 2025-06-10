@@ -1,7 +1,6 @@
 class HUD {
   private PFont font;
   private int millisLapsed, startTime;
-  private boolean raceStart;
   private Car car;
   private PImage nos;
   
@@ -77,14 +76,10 @@ class HUD {
     startTime = millis();
   }
   
-  public void setRaceStart(boolean r){
-    raceStart = r;
-  }
-  
   public void display() {
     backdrop();
+    if (enemies.size() < playerSize) waiting();
 
-    if (!raceStart) ready();
     else {
       nitro();
       place();
@@ -93,7 +88,7 @@ class HUD {
     }
   }
 
-  public void ready(){
+  public void waiting(){
     pushMatrix();
 
     fill(220);
@@ -101,11 +96,7 @@ class HUD {
     textFont(font);
     textSize(34);
     text("WAITING FOR PLAYERS...", width / 2, 25);
-    text(enemies.size() + (ready ? 1 : 0) + "/3", width / 2, 75);
-
-    textSize(20);
-    fill(255);
-    text("PRESS 'R' TO READY UP", width / 10, 52.5);
+    text(enemies.size() + 1 + "/" + (playerSize + 1), width / 2, 75);
 
     popMatrix();
   }

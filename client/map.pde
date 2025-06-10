@@ -107,10 +107,19 @@ class Map {
     popMatrix();
   }
   
-  boolean isBorder(float x, float y){
-    color c = map.get(int(x*scale), int(y * scale));
-    //println(red(c) + " " + blue(c) + " " + green(c));
-    return (!(red(c) == 255 && blue(c) == 4 && green(c) == 0));
+  boolean isBorder(float x, float y) {
+    
+    float translatedX = x + transX;
+    float translatedY = y + transY;
+    
+    if (translatedX >= 0 && translatedX < map.width && translatedY >= 0 && translatedY < map.height) {
+        color c = map.get(int(translatedX * scale), int(translatedY * scale));
+        println(red(c) + " " + green(c) + " " + blue(c));
+        return !(red(c) == 255 && blue(c) == 4 && green(c) == 0);
+    }
+    
+    return false;
   }
+
   
 }

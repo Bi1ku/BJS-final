@@ -8,7 +8,7 @@ int playerSize;
 
 boolean reversing;
 boolean toggledBack;
-boolean colliding;
+boolean colliding = false;
 boolean start, ready, music;
 
 
@@ -92,7 +92,8 @@ void keyReleased() {
 
 void draw() {
   background(0);
-  if(!map.isBorder(car.pos.x, car.pos.y)){
+  
+  if(!map.isBorder(car.actualPos.x, car.actualPos.y)){
     colliding = true;
     PVector copy = car.vel.copy();
     if (copy.mag() > 0.5) { 

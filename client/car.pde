@@ -14,10 +14,13 @@ class Car {
   private PImage[] nitroSprites;
 
   private boolean flip, stopX, stopY;
+  private boolean colliding = false;
+
+  private PVector actualPos;
 
   public Car(PVector pos, float scale) {
     this.pos = pos;
-
+    this.actualPos = pos;
     this.scale = scale;
     this.recipScale = 1 / scale;
  
@@ -48,9 +51,11 @@ class Car {
   }
   
   public void borderCollision(PVector copy){
+    colliding = true;
     PVector opposite =  copy.copy().rotate(PI).mult(2);
     pos.add(opposite);
     vel.mult(-0.5);
+    colliding = false;
   }
 
   private void display() {
@@ -59,11 +64,22 @@ class Car {
     imageMode(CENTER);
     scale(scale);
 
-    if (stopX && stopY) translate(width / 2 * recipScale, height / 2 * recipScale);
-    else if (stopX) translate(width / 2 * recipScale, pos.y + offset.y);
-    else if (stopY) translate(pos.x + offset.x, height / 2 * recipScale);
-    else translate(pos.x + offset.x, pos.y + offset.y);
-
+    if (stopX && stopY){ 
+      translate(width / 2 * recipScale, height / 2 * recipScale);
+      actualPos = new PVector(width/2  * recipScale, height/2 * recipScale);
+    }
+    else if (stopX) {
+      translate(width / 2 * recipScale, pos.y + offset.y);
+      actualPos = new PVector(width/2  * recipScale, pos.y + offset.y);
+    }
+    else if (stopY) {
+      translate(pos.x + offset.x, height / 2 * recipScale);
+      actualPos = new PVector(pos.x + offset.x, height / 2 * recipScale);
+    }
+    else {
+      translate(pos.x + offset.x, pos.y + offset.y);
+      actualPos = new PVector(pos.x + offset.x, pos.y + offset.y);
+    }
     rotate(vel.heading());
 
     if (flip) rotate(PI);
@@ -79,6 +95,9 @@ class Car {
   }
 
   private void listen(boolean[] keys) {
+    if(colliding){
+      return;
+    }
     boolean w = keys[0];
     boolean a = keys[1];
     boolean s = keys[2];

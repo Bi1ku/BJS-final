@@ -49,6 +49,12 @@ class Car {
     display();
   }
 
+  public void update(){
+    vel.limit(limit);
+    pos.add(vel);
+    display();
+  }
+
   private void display() {
     pushMatrix();
 

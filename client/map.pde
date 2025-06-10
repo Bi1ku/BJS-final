@@ -114,6 +114,7 @@ class Map {
       reversing = true;
       car.setVel(vel.rotate(PI));
       car.setFlip(true);
+      car.update();
     } else {
       car.setLimit(200);
     }

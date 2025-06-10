@@ -3,12 +3,12 @@ class Car {
   private static final float DEACCEL = 0.04;
   private static final float FRICTION = 0.978;
 
-  private int nitro, nitroDelay;
+  private int nitro, nitroDelay, limit;
   private boolean isNitro, isDrifting;
 
   private float scale, recipScale;
 
-  private PVector pos, vel, tract, offset;
+  private PVector pos, vel, tract, offset, actualPos;
 
   private PImage sprite, driftSprite;
   private PImage[] nitroSprites;
@@ -23,10 +23,12 @@ class Car {
  
     this.tract = new PVector(0, 0);
     this.vel = new PVector(0, 0);
+    this.actualPos = new PVector(0, 0);
     
     this.offset = new PVector(0, 0);
     
     this.nitro = 200;
+    this.limit = 200;
 
     this.sprite = loadImage("../assets/sprites/player/player.png");
 
@@ -38,7 +40,7 @@ class Car {
   }
 
   public void update(boolean[] keys) {
-    vel.limit(200);
+    vel.limit(limit);
     listen(keys);
     pos.add(tract);
     pos.add(vel);
@@ -53,20 +55,32 @@ class Car {
     imageMode(CENTER);
     scale(scale);
 
-    if (stopX && stopY) translate(width / 2 * recipScale, height / 2 * recipScale);
-    else if (stopX) translate(width / 2 * recipScale, pos.y + offset.y);
-    else if (stopY) translate(pos.x + offset.x, height / 2 * recipScale);
-    else translate(pos.x + offset.x, pos.y + offset.y);
+    if (stopX && stopY) {
+      actualPos = new PVector(width / 2 * recipScale, height / 2 * recipScale);
+      translate(width / 2 * recipScale, height / 2 * recipScale);
+    }
+    else if (stopX) {
+      actualPos = new PVector(width / 2 * recipScale, pos.y + offset.y);
+      translate(width / 2 * recipScale, pos.y + offset.y);
+    }
+    else if (stopY) {
+      actualPos = new PVector(pos.x + offset.x, height / 2 * recipScale);
+      translate(pos.x + offset.x, height / 2 * recipScale);
+    }
+    else {
+      actualPos = new PVector(pos.x + offset.x, pos.y + offset.y);
+      translate(pos.x + offset.x, pos.y + offset.y);
+    }
 
     rotate(vel.heading());
 
     if (flip) rotate(PI);
     if (!isNitro && !isDrifting) image(sprite, 0, 0);
-    else if (isNitro && !isDrifting) {
+    else if (isDrifting && !isNitro) {
+      image(driftSprite, 0, 0);
+   } else if (isNitro) {
       int index = (int) ((millis() / 100) % nitroSprites.length);
       image(nitroSprites[index], 0, 0);
-    } else {
-      image(driftSprite, 0, 0);
     }
 
     popMatrix();
@@ -177,6 +191,8 @@ class Car {
       nitroDelay = 50;
     }
 
+    if (nitro <= 0) isNitro = false;
+
     if (!v) {
       isNitro = false;
       if (nitroDelay < 0 && nitro <= 200) nitro += 2;
@@ -184,6 +200,10 @@ class Car {
    }
 
     tract.lerp(targetTraction, 0.075);
+  }
+
+  public PVector getActualPos() {
+    return actualPos.copy();
   }
 
   public int getNitro() {
@@ -201,6 +221,10 @@ class Car {
   public PVector getVel() {
     return vel.copy();
   }
+
+  public void setVel(PVector vel) {
+    this.vel = vel.copy();
+  }
   
   public PVector getPos() {
     return pos.copy();
@@ -208,6 +232,10 @@ class Car {
 
   public PVector getOffset() {
     return offset.copy();
+  }
+
+  public void setLimit(int limit) {
+    this.limit = limit;
   }
 
   public void setOffset(PVector offset) {
@@ -220,5 +248,9 @@ class Car {
 
   public void setStopY(boolean stopY) {
     this.stopY = stopY;
+  }
+
+  public void setFlip(boolean flip) {
+    this.flip = flip;
   }
 }

@@ -1,5 +1,5 @@
 class Map {
-  private PImage map;
+  private PImage map, hitbox;
   private Car car;
   private int scale;
 
@@ -12,6 +12,7 @@ class Map {
 
   public Map(String path, int scale, Car car, HashMap<Integer, Enemy> enemies) {
     this.map = loadImage(path);
+    this.hitbox = loadImage("../assets/maps/hitbox.png");
     this.scale = scale;
     this.car = car;
     
@@ -96,9 +97,30 @@ class Map {
     }
   }
 
+  public void determineFriction() {
+    PVector actualPos = car.getPos().mult(car.getScale());
+    PVector vel = car.getVel();
+
+    color pixel = hitbox.get((int) (actualPos.x / 3), (int) (actualPos.y / 3));
+    float green = green(pixel);
+    float blue = blue(pixel);
+
+    if (85 <= green && green <= 110) { // Grass
+      car.setLimit(100);
+    } else if (blue == 215 && green == 163) {
+      PVector backward = PVector.fromAngle(vel.heading());
+      reversing = true;
+      car.setVel(vel.rotate(PI));
+      car.setFlip(true);
+    } else {
+      car.setLimit(200);
+    }
+  }
+
   public void update() {
     pushMatrix();
     translateScreen();
+    determineFriction();
 
     scale(scale);
     imageMode(CORNER);

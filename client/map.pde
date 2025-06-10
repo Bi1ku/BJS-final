@@ -15,7 +15,7 @@ class Map {
     this.hitbox = loadImage("../assets/maps/hitbox.png");
     this.scale = scale;
     this.car = car;
-    
+
     this.enemies = enemies;
   }
 
@@ -25,6 +25,8 @@ class Map {
 
     PVector carPos = car.getPos().mult(carScale);
     PVector offset = car.getOffset();
+
+    println("Car Position from map: " + carPos.x + ", " + carPos.y);
 
     // Camera X Movement
     if (map.width * scale - carPos.x < width / 2) {
@@ -98,10 +100,10 @@ class Map {
   }
 
   public void determineFriction() {
-    PVector actualPos = car.getPos().mult(car.getScale());
+    PVector pos = car.getPos().mult(car.getScale());
     PVector vel = car.getVel();
 
-    color pixel = hitbox.get((int) (actualPos.x / 3), (int) (actualPos.y / 3));
+    color pixel = hitbox.get((int) (pos.x / 3), (int) (pos.y / 3));
     float green = green(pixel);
     float blue = blue(pixel);
 

@@ -1,5 +1,5 @@
 class Car {
-  private static final float ACCEL = 6.0;
+  private static final float ACCEL = 4.0;
   private static final float DEACCEL = 0.04;
   private static final float FRICTION = 0.978;
 
@@ -8,22 +8,22 @@ class Car {
 
   private float scale, recipScale;
 
-  private PVector pos, vel, tract, offset, actualPos;
+  private PVector pos, vel, tract, offset;
 
   private PImage sprite, driftSprite;
   private PImage[] nitroSprites;
 
   private boolean flip, stopX, stopY;
 
-  public Car(PVector pos, float scale) {
+  public Car(PVector pos, float scale, float heading) {
     this.pos = pos;
 
     this.scale = scale;
     this.recipScale = 1 / scale;
  
     this.tract = new PVector(0, 0);
-    this.vel = new PVector(0, 0);
-    this.actualPos = new PVector(0, 0);
+    this.vel = new PVector(0.0000001, 0.0000001);
+    this.vel.rotate(heading);
     
     this.offset = new PVector(0, 0);
     
@@ -55,20 +55,15 @@ class Car {
     imageMode(CENTER);
     scale(scale);
 
-    if (stopX && stopY) {
-      actualPos = new PVector(width / 2 * recipScale, height / 2 * recipScale);
+    if (stopX && stopY)
       translate(width / 2 * recipScale, height / 2 * recipScale);
-    }
-    else if (stopX) {
-      actualPos = new PVector(width / 2 * recipScale, pos.y + offset.y);
+    else if (stopX)
       translate(width / 2 * recipScale, pos.y + offset.y);
-    }
-    else if (stopY) {
-      actualPos = new PVector(pos.x + offset.x, height / 2 * recipScale);
+    else if (stopY) 
       translate(pos.x + offset.x, height / 2 * recipScale);
-    }
     else {
-      actualPos = new PVector(pos.x + offset.x, pos.y + offset.y);
+      println("POS: " + pos.x + ", " + pos.y);
+      println("OFFSET: " + offset.x + ", " + offset.y);
       translate(pos.x + offset.x, pos.y + offset.y);
     }
 
@@ -200,10 +195,6 @@ class Car {
    }
 
     tract.lerp(targetTraction, 0.075);
-  }
-
-  public PVector getActualPos() {
-    return actualPos.copy();
   }
 
   public int getNitro() {

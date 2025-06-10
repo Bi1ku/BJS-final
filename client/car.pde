@@ -62,11 +62,12 @@ class Car {
     rotate(heading);
 
     if (!isNitro && !isDrifting) image(sprite, 0, 0);
-    else if (isNitro && !isDrifting) {
+    else if (!isNitro && isDrifting) {
+      image(driftSprite, 0, 0);
+    } else if (isNitro) {
+      println(nitro);
       int index = (int) ((millis() / 100) % nitroSprites.length);
       image(nitroSprites[index], 0, 0);
-    } else {
-      image(driftSprite, 0, 0);
     }
 
     popMatrix();
@@ -167,16 +168,20 @@ class Car {
     
     // NITRO
     if (v && nitro > 0) {
+      if (music && !nitroSound.isPlaying()) nitroSound.play();
       isNitro = true;
       vel.mult(1.3);
       nitro -= 2;
       nitroDelay = 50;
     }
+    
+    if (nitro <= 0) isNitro = false;
 
     if (!v) {
       isNitro = false;
       if (nitroDelay < 0 && nitro <= 200) nitro += 2;
       nitroDelay -= 1;
+      if (music && nitroSound.isPlaying()) nitroSound.stop();
    }
 
     tract.lerp(targetTraction, 0.075);

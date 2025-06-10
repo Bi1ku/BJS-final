@@ -23,7 +23,7 @@ Map map;
 Title title;
 HUD hud;
 
-SoundFile driftSound, accelerationSound, gameSound;
+SoundFile driftSound, accelerationSound, gameSound, nitroSound;
 
 void setup() {
   size(1800, 1000, P2D);
@@ -50,6 +50,7 @@ void setup() {
     driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
     accelerationSound = new SoundFile(this, "../assets/sounds/acceleration.mp3");
     gameSound = new SoundFile(this, "../assets/sounds/game.mp3");
+    nitroSound = new SoundFile(this, "../assets/sounds/nitro.mp3");
 
     gameSound.loop();
   }

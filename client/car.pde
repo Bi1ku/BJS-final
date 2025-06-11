@@ -151,13 +151,13 @@ class Car {
     // TURNING
     if (a) {
       if (space) vel.rotate(constrain(-DEACCEL * (vel.mag() / 2), -DEACCEL, 0));
-      else vel.rotate(constrain(-DEACCEL * (vel.mag() / 60), -DEACCEL, 0));
+      else vel.rotate(constrain(-DEACCEL * (vel.mag() / 100), -DEACCEL, 0));
     }
 
     if (d) {
       if (space)
         vel.rotate(constrain(DEACCEL * (vel.mag() / 2), 0, DEACCEL));
-      else vel.rotate(constrain(DEACCEL * (vel.mag() / 60), 0, DEACCEL));
+      else vel.rotate(constrain(DEACCEL * (vel.mag() / 100), 0, DEACCEL));
     }
                           
     // DRIFTING

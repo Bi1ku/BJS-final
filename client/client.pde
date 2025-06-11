@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Arrays;
 
 int playerSize;
+int numEnemies;
 
 boolean reversing;
 boolean toggledBack;
@@ -17,7 +18,7 @@ Car car;
 boolean[] inputs;
 
 HashMap<Integer, Enemy> enemies;
-PImage enemySprite;
+PImage enemySprite, enemySprite2;
 
 Map map;
 Title title;
@@ -29,12 +30,13 @@ void setup() {
   size(1800, 1000, P2D);
 
   clientId = int(random(100000));
-  client = new Client(this, "192.168.1.197", 5204);
+  client = new Client(this, "127.0.0.1", 5204);
 
   car = new Car(new PVector(0, 0), 0.1);
   inputs = new boolean[6];
 
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
+  enemySprite2 = loadImage("../assets/sprites/enemy_blue.png");
   enemies = new HashMap<Integer, Enemy>();
 
   map = new Map("../assets/maps/btdMap.jpg", 5, car, enemies);
@@ -101,12 +103,13 @@ void writeToClient(){
     client.write(clientId + "," + car.getPos().x + "," + car.getPos().y + "," + car.getVel().heading());
   
     String res = client.readString();
+    System.out.println(res);
       
     if (res != null && res.contains("!@#$")) {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
         
       if (!point[0].equals(str(clientId))) {
-        enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3]), 0.2));
+        enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3]), 0.1));
       }
     }
   }

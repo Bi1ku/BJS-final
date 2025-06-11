@@ -33,7 +33,10 @@ class Enemy {
     scale(scale);
     translate(pos.x + (offset.x * recipScale) , pos.y + (offset.y * recipScale));
     rotate(heading);
-    image(enemySprite, 0, 0);
+    if(enemies.size() % 2 == 1)
+      image(enemySprite, 0, 0);
+    else
+      image(enemySprite2, 0, 0);
     
     popMatrix();
   }

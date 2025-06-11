@@ -2,6 +2,7 @@ import processing.sound.*;
 import processing.net.*;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 int playerSize;
 int numEnemies;
@@ -18,6 +19,7 @@ Car car;
 boolean[] inputs;
 
 HashMap<Integer, Enemy> enemies;
+ArrayList<Integer> enemyNums;
 PImage enemySprite, enemySprite2;
 
 Map map;
@@ -109,7 +111,10 @@ void writeToClient(){
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
         
       if (!point[0].equals(str(clientId))) {
-        enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3]), 0.1));
+        enemies.put(int(point[0]), new Enemy(int(point[0]), new PVector(float(point[1]), float(point[2])), float(point[3]), 0.1));
+        if(!(enemyNums.contains(point[0]))){
+          enemyNums.add(int(point[0]));
+        }
       }
     }
   }

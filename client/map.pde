@@ -57,7 +57,7 @@ class Map {
         changedXL = true;
       }
 
-      offset.x = (-boundXL) * recipScale;
+      offset.x = (-boundXL) * car.getScale();
       car.setOffset(offset);
 
       car.setStopX(false);
@@ -92,7 +92,7 @@ class Map {
         changedYD = true;
       }
 
-      offset.y = (-boundYD) * recipScale;
+      offset.y = (-boundYD) * car.getScale();
       car.setOffset(offset);
 
       car.setStopY(false);

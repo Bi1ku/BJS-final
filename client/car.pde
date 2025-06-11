@@ -68,8 +68,8 @@ class Car {
     else if (stopY) 
       translate(pos.x + offset.x, height / 2 * recipScale);
     else {
-      println("POS: " + pos.x + ", " + pos.y);
-      println("OFFSET: " + offset.x + ", " + offset.y);
+      //println("POS: " + pos.x + ", " + pos.y);
+      //println("OFFSET: " + offset.x + ", " + offset.y);
       translate(pos.x + offset.x, pos.y + offset.y);
     }
 
@@ -104,12 +104,13 @@ class Car {
       if (reversing) {
         forward.rotate(PI);
 
-        if (vel.mag() < 5) {
-          reversing = false;
-          flip = false;
-        }
+        if (reversing) {
+        reversing = false;
+        flip = false;
+        toggledBack = false;
+        vel.mult(0);
       }
-
+      
       tract.add(vel.copy().normalize().mult(0.2));
       forward.mult(ACCEL);
       vel.add(forward);

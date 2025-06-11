@@ -28,7 +28,7 @@ class Map {
     PVector carPos = car.getPos().mult(carScale);
     PVector offset = car.getOffset();
 
-    println("Car Position from map: " + carPos.x + ", " + carPos.y);
+    //println("Car Position from map: " + carPos.x + ", " + carPos.y);
 
     // Camera X Movement
     if (map.width * scale - carPos.x < width / 2) {
@@ -110,8 +110,8 @@ class Map {
     float blue = blue(pixel);
     float red = red(pixel);
 
-    println(pos);
-    println("Red : " + red + " | Green: " + green + " | Blue: " + blue);
+    //println(pos);
+    //println("Red : " + red + " | Green: " + green + " | Blue: " + blue);
 
 
     // 254.0 | Green: 199.0 | Blue: 0.0

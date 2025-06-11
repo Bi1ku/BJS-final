@@ -52,7 +52,7 @@ void setup() {
 
   // for testing purposes (faster load times if false)
   start = true; // default: false
-  music = false; // default: true
+  music = true; // default: true
   playerSize = 0; // default: 2
 
   if (music) {

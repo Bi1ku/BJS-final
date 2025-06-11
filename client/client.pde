@@ -28,7 +28,7 @@ Map map;
 Title title;
 HUD hud;
 
-SoundFile driftSound, accelerationSound, gameSound, nitroSound;
+SoundFile deaccelerateSound, skidSound, driftSound, accelerationSound, gameSound, nitroSound;
 
 void setup() {
   size(1800, 1000, P2D);
@@ -60,7 +60,8 @@ void setup() {
     accelerationSound = new SoundFile(this, "../assets/sounds/acceleration.mp3");
     gameSound = new SoundFile(this, "../assets/sounds/game.mp3");
     nitroSound = new SoundFile(this, "../assets/sounds/nitro.mp3");
-
+    skidSound = new SoundFile(this, "../assets/sounds/skid.mp3");
+    deaccelerateSound = new SoundFile(this, "../assets/sounds/deaccelerate.mp3");
     gameSound.loop();
   }
 }

@@ -117,7 +117,10 @@ class Car {
 
       if (music && !accelerationSound.isPlaying()) accelerationSound.play();
     } else {
-      if (music && accelerationSound.isPlaying()) accelerationSound.stop();
+      if (music && accelerationSound.isPlaying()) {
+        accelerationSound.stop();
+        deaccelerateSound.play();
+      }
     }
 
     // BRAKING/BACKWARDS
@@ -160,15 +163,17 @@ class Car {
     // DRIFTING
     if (space) {
       isDrifting = true;
-
+      
       if (d) {
-       if (music && !driftSound.isPlaying()) driftSound.play();
+       skidSound.play();
+       //if (music && !driftSound.isPlaying()) driftSound.play();
 
        targetTraction = vel.copy().mult(0.5).rotate(-PI / 2);
       }
 
       else if (a) {
-        if (music && !driftSound.isPlaying()) driftSound.play();
+        skidSound.play();
+        //if (music && !driftSound.isPlaying()) driftSound.play();
 
         targetTraction = vel.copy().mult(0.5).rotate(PI / 2);
       }
@@ -180,7 +185,7 @@ class Car {
       isDrifting = false;
 
       tract.mult(0.9);
-
+      skidSound.stop();
       if (music && driftSound.isPlaying()) driftSound.stop();
     }
     

@@ -2,6 +2,7 @@ class Map {
   private PImage map, hitbox;
   private Car car;
   private int scale;
+  private HUD hud;
 
   private float transX, transY;
 
@@ -10,11 +11,12 @@ class Map {
   
   private HashMap<Integer, Enemy> enemies;
 
-  public Map(String path, int scale, Car car, HashMap<Integer, Enemy> enemies) {
+  public Map(String path, int scale, Car car, HashMap<Integer, Enemy> enemies, HUD hud) {
     this.map = loadImage(path);
     this.hitbox = loadImage("../assets/maps/hitbox.png");
     this.scale = scale;
     this.car = car;
+    this.hud = hud;
 
     this.enemies = enemies;
   }
@@ -106,7 +108,13 @@ class Map {
     color pixel = hitbox.get((int) (pos.x / 3), (int) (pos.y / 3));
     float green = green(pixel);
     float blue = blue(pixel);
+    float red = red(pixel);
 
+    println(pos);
+    println("Red : " + red + " | Green: " + green + " | Blue: " + blue);
+
+
+    // 254.0 | Green: 199.0 | Blue: 0.0
     if (85 <= green && green <= 110) { // Grass
       car.setLimit(100);
     } else if (blue == 215 && green == 163) {
@@ -117,6 +125,16 @@ class Map {
       car.update();
     } else {
       car.setLimit(200);
+    }
+
+    // 255.0 | Green: 64.0 | Blue: 255.0
+    if (red == 254 && green == 199 && blue == 0 && !finish) {
+      hud.setStartTime();
+      if (lap == 6) gameEnd = true;
+      finish = true;
+      lap++;
+    } else if (red == 255 && green == 64 && blue == 255) {
+      finish = false;
     }
   }
 

@@ -7,7 +7,9 @@ import java.util.ArrayList;
 int playerSize;
 int numEnemies;
 
-boolean reversing;
+int lap;
+
+boolean reversing, gameEnd, finish, started;
 boolean toggledBack;
 
 boolean start, music;
@@ -26,15 +28,17 @@ Map map;
 Title title;
 HUD hud;
 
-SoundFile driftSound, accelerationSound, gameSound, nitroSound;
+SoundFile deaccelerateSound, skidSound, driftSound, accelerationSound, gameSound, nitroSound;
 
 void setup() {
   size(1800, 1000, P2D);
 
+
   clientId = int(random(100000));
   client = new Client(this, "127.0.0.1", 5204);
 
-  car = new Car(new PVector(0, 0), 0.1);
+  PVector initialPos = new PVector(6107.1304 * 10, 3572.2363 * 10);
+  car = new Car(initialPos, 0.1, 1.1 * PI / 2);
   inputs = new boolean[6];
 
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
@@ -42,9 +46,9 @@ void setup() {
   enemies = new HashMap<Integer, Enemy>();
   enemyNums = new ArrayList<Integer>();
 
-  map = new Map("../assets/maps/btdMap.jpg", 5, car, enemies);
   title = new Title("../assets/ui/title.png");
   hud = new HUD("../assets/fonts/mono_b.ttf", car);
+  map = new Map("../assets/maps/map.png", 3, car, enemies, hud);
 
   // for testing purposes (faster load times if false)
   start = true; // default: false
@@ -56,7 +60,8 @@ void setup() {
     accelerationSound = new SoundFile(this, "../assets/sounds/acceleration.mp3");
     gameSound = new SoundFile(this, "../assets/sounds/game.mp3");
     nitroSound = new SoundFile(this, "../assets/sounds/nitro.mp3");
-
+    skidSound = new SoundFile(this, "../assets/sounds/skid.mp3");
+    deaccelerateSound = new SoundFile(this, "../assets/sounds/deaccelerate.mp3");
     gameSound.loop();
   }
 }
@@ -66,8 +71,6 @@ void keyPressed() {
 
   else {
     if (enemies.size() >= playerSize) {
-      hud.setStartTime();
-
       if (key == 'w') inputs[0] = true;
       if (key == 'a') inputs[1] = true;
       if (key == 's') inputs[2] = true;
@@ -94,10 +97,14 @@ void draw() {
   if (!start) title.display();
   
   else {
-    map.update();
-    for (Enemy enemy: enemies.values()) enemy.display();
-    car.update(inputs);
-    hud.display();
+    if (!gameEnd) {
+      map.update();
+      for (Enemy enemy: enemies.values()) enemy.display();
+      car.update(inputs);
+      hud.display();
+    } else {
+      hud.finish();
+    }
   }
 }
 

@@ -3,6 +3,7 @@ class HUD {
   private int millisLapsed, startTime;
   private Car car;
   private PImage nos;
+  private boolean set;
   
   public HUD(String path, Car car) {
     this.font = createFont(path, 128);
@@ -57,7 +58,7 @@ class HUD {
     textFont(font);
     textSize(36);
 
-    text("LAP 4/5", width / 4, 47);
+    text("LAP " + lap + "/5", width / 4, 47);
     
     popMatrix();
   }
@@ -121,6 +122,18 @@ class HUD {
     scale(0.15);
     imageMode(CENTER);
     image(nos, width / 1.15 * (1 / 0.15), height / 16 * (1 / 0.15));
+
+    popMatrix();
+  }
+
+  public void finish() {
+    pushMatrix();
+
+    fill(255, 0, 0);
+    textAlign(CENTER, TOP);
+    textFont(font);
+    textSize(64);
+    text("FINISHED!", width / 2, height / 2);
 
     popMatrix();
   }

@@ -1,12 +1,14 @@
 class Enemy {
   private PVector pos;
   private float heading, scale, recipScale;
+  private int id;
   
   private PVector offset;
 
-  public Enemy(PVector pos, float heading, float scale) {
+  public Enemy(int id, PVector pos, float heading, float scale) {
     this.pos = pos;
     this.heading = heading;
+    this.id = id;
     
     this.scale = scale;
     this.recipScale = 1 / scale;
@@ -33,7 +35,10 @@ class Enemy {
     scale(scale);
     translate(pos.x + (offset.x * recipScale) , pos.y + (offset.y * recipScale));
     rotate(heading);
-    image(enemySprite, 0, 0);
+    if(enemyNums.indexOf(id) % 2 == 1)
+      image(enemySprite, 0, 0);
+    else
+      image(enemySprite2, 0, 0);
     
     popMatrix();
   }

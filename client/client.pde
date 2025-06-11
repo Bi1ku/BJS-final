@@ -2,8 +2,10 @@ import processing.sound.*;
 import processing.net.*;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 int playerSize;
+int numEnemies;
 
 boolean reversing;
 boolean toggledBack;
@@ -17,7 +19,8 @@ Car car;
 boolean[] inputs;
 
 HashMap<Integer, Enemy> enemies;
-PImage enemySprite;
+ArrayList<Integer> enemyNums;
+PImage enemySprite, enemySprite2;
 
 Map map;
 Title title;
@@ -29,14 +32,16 @@ void setup() {
   size(1800, 1000, P2D);
 
   clientId = int(random(100000));
-  client = new Client(this, "192.168.1.197", 5204);
+  client = new Client(this, "127.0.0.1", 5204);
 
   PVector initialPos = new PVector(7481.5664 * 10, 4420.715 * 10);
   car = new Car(initialPos, 0.1, 1.1 * PI / 2);
   inputs = new boolean[6];
 
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
+  enemySprite2 = loadImage("../assets/sprites/enemy_blue.png");
   enemies = new HashMap<Integer, Enemy>();
+  enemyNums = new ArrayList<Integer>();
 
   map = new Map("../assets/maps/map.png", 3, car, enemies);
   title = new Title("../assets/ui/title.png");
@@ -102,12 +107,16 @@ void writeToClient(){
     client.write(clientId + "," + car.getPos().x + "," + car.getPos().y + "," + car.getVel().heading());
   
     String res = client.readString();
+    System.out.println(res);
       
     if (res != null && res.contains("!@#$")) {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
         
       if (!point[0].equals(str(clientId))) {
-        enemies.put(int(point[0]), new Enemy(new PVector(float(point[1]), float(point[2])), float(point[3]), 0.1));
+        enemies.put(int(point[0]), new Enemy(int(point[0]), new PVector(float(point[1]), float(point[2])), float(point[3]), 0.1));
+        if(!(enemyNums.contains(int(point[0])))){
+          enemyNums.add(int(point[0]));
+        }
       }
     }
   }

@@ -28,8 +28,6 @@ class Map {
     PVector carPos = car.getPos().mult(carScale);
     PVector offset = car.getOffset();
 
-    println("Car Position from map: " + carPos.x + ", " + carPos.y);
-
     // Camera X Movement
     if (map.width * scale - carPos.x < width / 2) {
       if (!changedXR) {
@@ -105,14 +103,12 @@ class Map {
     PVector pos = car.getPos().mult(car.getScale());
     PVector vel = car.getVel();
 
+    println(pos);
+
     color pixel = hitbox.get((int) (pos.x / 3), (int) (pos.y / 3));
     float green = green(pixel);
     float blue = blue(pixel);
     float red = red(pixel);
-
-    println(pos);
-    println("Red : " + red + " | Green: " + green + " | Blue: " + blue);
-
 
     // 254.0 | Green: 199.0 | Blue: 0.0
     if (85 <= green && green <= 110) { // Grass
@@ -130,9 +126,10 @@ class Map {
     // 255.0 | Green: 64.0 | Blue: 255.0
     if (red == 254 && green == 199 && blue == 0 && !finish) {
       hud.setStartTime();
-      if (lap == 6) gameEnd = true;
       finish = true;
+      firstLine = true;
       lap++;
+      if (lap == 6) gameEnd = true;
     } else if (red == 255 && green == 64 && blue == 255) {
       finish = false;
     }

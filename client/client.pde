@@ -34,8 +34,8 @@ void setup() {
   clientId = int(random(100000));
   client = new Client(this, "127.0.0.1", 5204);
 
-  PVector initialPos = new PVector(7481.5664 * 10, 3000.715 * 10);
-  car = new Car(new PVector(2000 * 10, 4300 * 10), 0.1, 1.1 * PI / 2);
+  PVector initialPos = new PVector(7481.5664 * 10, 4420.715 * 10);
+  car = new Car(initialPos, 0.1, 1.1 * PI / 2);
   inputs = new boolean[6];
 
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
@@ -48,8 +48,8 @@ void setup() {
   hud = new HUD("../assets/fonts/mono_b.ttf", car);
 
   // for testing purposes (faster load times if false)
-  start = true; // default: false
-  music = false; // default: true
+  start = false; // default: false
+  music = true; // default: true
   playerSize = 0; // default: 2
 
   if (music) {

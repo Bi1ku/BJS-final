@@ -40,6 +40,7 @@ void setup() {
   enemySprite = loadImage("../assets/sprites/enemy_black.png");
   enemySprite2 = loadImage("../assets/sprites/enemy_blue.png");
   enemies = new HashMap<Integer, Enemy>();
+  enemyNums = new ArrayList<Integer>();
 
   map = new Map("../assets/maps/btdMap.jpg", 5, car, enemies);
   title = new Title("../assets/ui/title.png");
@@ -112,7 +113,7 @@ void writeToClient(){
         
       if (!point[0].equals(str(clientId))) {
         enemies.put(int(point[0]), new Enemy(int(point[0]), new PVector(float(point[1]), float(point[2])), float(point[3]), 0.1));
-        if(!(enemyNums.contains(point[0]))){
+        if(!(enemyNums.contains(int(point[0])))){
           enemyNums.add(int(point[0]));
         }
       }

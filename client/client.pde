@@ -11,6 +11,7 @@ int lap;
 
 boolean reversing, gameEnd, finish, started;
 boolean toggledBack;
+int colliding = 0;
 
 boolean start, music;
 

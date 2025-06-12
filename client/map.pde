@@ -111,7 +111,6 @@ class Map {
     if (80 <= green && green <= 120 && 40 <= red && red <= 120 && 5 <= blue && blue <= 110) { // Grass
       car.setLimit(100);
     } else if (blue == 215 && green == 163) {
-      PVector backward = PVector.fromAngle(vel.heading());
       reversing = true;
       car.setVel(vel.rotate(PI));
       car.setFlip(true);

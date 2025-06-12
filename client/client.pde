@@ -93,7 +93,8 @@ void keyReleased() {
 void draw() {
   background(0);
   writeToClient();
-
+  println("VEL: " + car.vel.x + " " + car.vel.y);
+  println("toggledBack: " + toggledBack);
   if (!start) title.display();
   
   else {

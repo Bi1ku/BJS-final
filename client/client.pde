@@ -35,7 +35,7 @@ void setup() {
 
 
   clientId = int(random(100000));
-  client = new Client(this, "127.0.0.1", 5204);
+  client = new Client(this, "192.168.1.168", 5204);
 
   PVector initialPos = new PVector(6107.1304 * 10, 3572.2363 * 10);
   car = new Car(initialPos, 0.1, 1.1 * PI / 2);

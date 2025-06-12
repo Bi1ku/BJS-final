@@ -1,12 +1,13 @@
 class HUD {
   private PFont font;
-  private int millisLapsed, startTime, startFirstTime;
+  private int millisLapsed, startTime, startFirstTime, diffValue;
   private Car car;
   private PImage nos;
   private String bestTime;
   private String totalTime;
   private boolean firstTime;
   private boolean setFirstTime;
+  private boolean timeDiff;
   
   public HUD(String path, Car car) {
     this.font = createFont(path, 128);
@@ -93,8 +94,13 @@ class HUD {
   }
   
   public void setStartTime() {
+    if(setFirstTime){
+      timeDiff = true;
+      diffValue = (int(formatTime().substring(2,4)) * 100 + int(formatTime().substring(5))) - (int(bestTime.substring(2,4)) * 100 + int(bestTime.substring(5)));
+    }
+    
     firstTime = true;
-
+    
     if (bestTime.equals("0:00.00")) {
       bestTime = formatTime();
     }
@@ -123,6 +129,11 @@ class HUD {
       totalTime();
       laps();
       times();
+      if(timeDiff){
+        showTimeDiff();
+        if(formatTime().charAt(3) == '5') timeDiff = false;
+        System.out.println(formatTime().charAt(3));
+      }
     }
   }
 
@@ -175,6 +186,25 @@ class HUD {
     text("Total Time: " + totalTime, width / 2, height / 2 + 75);
     text("Best Lap: " + bestTime, width / 2, height / 2 + 150);
 
+    popMatrix();
+  }
+  
+  public void showTimeDiff(){
+    System.out.println(diffValue);
+    int mins = Math.abs(diffValue / 10000);
+    int secs = Math.abs((diffValue / 100) % 100);
+    int ms = Math.abs(diffValue % 100);
+    String displayValue = nf(mins,1) + ":" + nf(secs,2) + "." + nf(ms,2);
+    pushMatrix();
+    
+    fill(0,255,0);
+    if(diffValue > 0) fill(255, 0, 0);
+    textAlign(CENTER, TOP);
+    textFont(font);
+    textSize(34);
+    text("Time Diff", (3 * (width / 4)) - 25, 25);
+    text(displayValue, 3 * (width / 4) - 25, 80);
+    
     popMatrix();
   }
 }

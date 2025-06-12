@@ -1,17 +1,24 @@
 class HUD {
   private PFont font;
-  private int millisLapsed, startTime;
+  private int millisLapsed, startTime, startFirstTime;
   private Car car;
   private PImage nos;
-  private boolean set;
+  private String bestTime;
+  private String totalTime;
+  private boolean firstTime;
+  private boolean setFirstTime;
   
   public HUD(String path, Car car) {
     this.font = createFont(path, 128);
     this.car = car;
+    this.bestTime = "0:00.00";
+    this.totalTime = "0:00.00";
     this.nos = loadImage("../assets/ui/nos.png");
   }
   
   public String formatTime() {
+    if (!firstLine) return "0:00.00";
+
     millisLapsed = millis() - startTime; // millis() gives time since start, secs() or mins() give current time
     int secondsLapsed = (millisLapsed / 1000) % 60;
     int milliSecs = millisLapsed % 100;
@@ -19,6 +26,18 @@ class HUD {
     String res = nf(minsLapsed, 1) + ":" + nf(secondsLapsed, 2) + "." + nf(milliSecs, 2);
     return res;
   }
+
+  public String formatTotalTime() {
+    if (!firstLine) return "0:00.00";
+
+    millisLapsed = millis() - startFirstTime; // millis() gives time since start, secs() or mins() give current time
+    int secondsLapsed = (millisLapsed / 1000) % 60;
+    int milliSecs = millisLapsed % 100;
+    int minsLapsed = (millisLapsed / 1000) / 60;
+    String res = nf(minsLapsed, 1) + ":" + nf(secondsLapsed, 2) + "." + nf(milliSecs, 2);
+    return res;
+  }
+ 
   
   public void times() {
     pushMatrix();
@@ -29,22 +48,22 @@ class HUD {
     textFont(font);
     textSize(34);
 
-    text("BEST LAP: 0:30.76", width / 2, 25);
+    text("BEST LAP: " + bestTime, width / 2, 25);
     text("LAP TIME: " + formatTime(), width / 2, 80);
     
     popMatrix();
   }
   
-  public void place() {
+  public void totalTime() {
     pushMatrix();
     
     fill(255, 191, 0);
     
     textAlign(CENTER, TOP);
     textFont(font);
-    textSize(64);
+    textSize(50);
 
-    text("17TH", width / 10, 40);
+    text(totalTime, width / 10, 40);
     
     popMatrix();
   }
@@ -74,16 +93,34 @@ class HUD {
   }
   
   public void setStartTime() {
+    firstTime = true;
+
+    if (bestTime.equals("0:00.00")) {
+      bestTime = formatTime();
+    }
+
+    else if (formatTime().compareTo(bestTime) < 0) {
+      bestTime = formatTime();
+    }
+
     startTime = millis();
   }
   
   public void display() {
+    if (firstTime && !setFirstTime) {
+      startFirstTime = millis();
+      firstTime = false;
+      setFirstTime = true;
+    }
+
+    totalTime = formatTotalTime();
+
     backdrop();
     if (enemies.size() < playerSize) waiting();
 
     else {
       nitro();
-      place();
+      totalTime();
       laps();
       times();
     }
@@ -134,6 +171,9 @@ class HUD {
     textFont(font);
     textSize(64);
     text("FINISHED!", width / 2, height / 2);
+    fill(255, 191, 0);
+    text("Total Time: " + totalTime, width / 2, height / 2 + 75);
+    text("Best Lap: " + bestTime, width / 2, height / 2 + 150);
 
     popMatrix();
   }

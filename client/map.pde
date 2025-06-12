@@ -110,13 +110,16 @@ class Map {
 
     if (80 <= green && green <= 120 && 40 <= red && red <= 120 && 5 <= blue && blue <= 110) { // Grass
       car.setLimit(100);
+      if(colliding > 0) colliding -= 1;
     } else if (blue == 215 && green == 163) {
+      colliding = 25;
       reversing = true;
       car.setVel(vel.rotate(PI));
       car.setFlip(true);
       car.update();
     } else {
       car.setLimit(200);
+      if(colliding > 0) colliding -= 1;
     }
 
     if (red == 254 && green == 199 && blue == 0 && !finish) {

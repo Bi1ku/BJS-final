@@ -96,7 +96,8 @@ class Car {
     PVector targetTraction = new PVector(0, 0);
 
     // ACCELERATION/FORWARD
-    if (w) {
+    if (w  && colliding <= 0) {
+    
       PVector forward = PVector.fromAngle(vel.heading());
 
       if (reversing) {

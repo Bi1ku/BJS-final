@@ -68,8 +68,6 @@ class Car {
     else if (stopY) 
       translate(pos.x + offset.x, height / 2 * recipScale);
     else {
-      //println("POS: " + pos.x + ", " + pos.y);
-      //println("OFFSET: " + offset.x + ", " + offset.y);
       translate(pos.x + offset.x, pos.y + offset.y);
     }
 
@@ -239,6 +237,10 @@ class Car {
   
   public PVector getPos() {
     return pos.copy();
+  }
+
+  public void setPos(PVector pos) {
+    this.pos = pos.copy();
   }
 
   public PVector getOffset() {

@@ -9,7 +9,7 @@ int numEnemies;
 
 int lap;
 
-boolean reversing, gameEnd, finish, started;
+boolean reversing, gameEnd, finish, started, checkedPos, firstLine;
 boolean toggledBack;
 int colliding = 0;
 
@@ -54,7 +54,7 @@ void setup() {
   // for testing purposes (faster load times if false)
   start = true; // default: false
   music = true; // default: true
-  playerSize = 0; // default: 2
+  playerSize = 1; // default: 2
 
   if (music) {
     driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");
@@ -115,7 +115,6 @@ void writeToClient(){
     client.write(clientId + "," + car.getPos().x + "," + car.getPos().y + "," + car.getVel().heading());
   
     String res = client.readString();
-    System.out.println(res);
       
     if (res != null && res.contains("!@#$")) {
       String[] point = res.split("\\!\\@\\#\\$")[1].split(",");
@@ -125,6 +124,18 @@ void writeToClient(){
         if(!(enemyNums.contains(int(point[0])))){
           enemyNums.add(int(point[0]));
         }
+      }
+
+      int connections = int(point[4]);
+      if (connections == 1 && !checkedPos) {
+        car.setPos(new PVector(6107.1304 * 10, 3572.2363 * 10));
+        checkedPos = true;
+      } else if (connections == 2 && !checkedPos) {
+        car.setPos(new PVector(6138.5767 * 10, 3404.8345 * 10));
+        checkedPos = true;
+      } else if (!checkedPos && connections == 3) {
+        car.setPos(new PVector(6415.482 * 10, 3367.3633 * 10));
+        checkedPos = true;
       }
     }
   }

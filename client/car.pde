@@ -109,6 +109,7 @@ class Car {
         flip = false;
         toggledBack = false;
         vel.mult(0);
+        }
       }
       
       tract.add(vel.copy().normalize().mult(0.2));

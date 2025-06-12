@@ -127,6 +127,8 @@ class Car {
 
     // BRAKING/BACKWARDS
     if (s) {
+      
+      
       if (vel.mag() > 5 && !reversing) {
         vel.add(vel.copy().mult(-DEACCEL));
       }
@@ -137,7 +139,7 @@ class Car {
 
         PVector backward = PVector.fromAngle(vel.heading());
 
-        if (!toggledBack) {
+        if (!toggledBack && vel.mag() > 0.1) {
           toggledBack = true;
           vel.rotate(PI);
           flip = true;

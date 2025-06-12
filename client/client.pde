@@ -53,7 +53,7 @@ void setup() {
   // for testing purposes (faster load times if false)
   start = true; // default: false
   music = true; // default: true
-  playerSize = 0; // default: 2
+  playerSize = 1; // default: 2
 
   if (music) {
     driftSound = new SoundFile(this, "../assets/sounds/drift.mp3");

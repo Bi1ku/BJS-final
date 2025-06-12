@@ -103,15 +103,12 @@ class Map {
     PVector pos = car.getPos().mult(car.getScale());
     PVector vel = car.getVel();
 
-    println(pos);
-
     color pixel = hitbox.get((int) (pos.x / 3), (int) (pos.y / 3));
     float green = green(pixel);
     float blue = blue(pixel);
     float red = red(pixel);
 
-    // 254.0 | Green: 199.0 | Blue: 0.0
-    if (85 <= green && green <= 110) { // Grass
+    if (80 <= green && green <= 120 && 40 <= red && red <= 120 && 5 <= blue && blue <= 110) { // Grass
       car.setLimit(100);
     } else if (blue == 215 && green == 163) {
       PVector backward = PVector.fromAngle(vel.heading());
@@ -123,7 +120,6 @@ class Map {
       car.setLimit(200);
     }
 
-    // 255.0 | Green: 64.0 | Blue: 255.0
     if (red == 254 && green == 199 && blue == 0 && !finish) {
       hud.setStartTime();
       finish = true;
